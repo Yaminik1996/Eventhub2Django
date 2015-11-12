@@ -7,4 +7,10 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^$', 'authentication.views.index'),
+    url(r'^login/', 'authentication.views._login'),
+    url(r'^register/', 'authentication.views.register'),
+    url(r'^loginuser/', 'authentication.views._loginuser'),
+    url(r'^dashboard/', 'authentication.views.dashboard'),
+    url(r'^logout/', 'authentication.views._logout'),
 )
