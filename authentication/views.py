@@ -23,11 +23,13 @@ def _login(request):
 		username=request.POST.get('email',False)
 		email = request.POST['email']
 		password = request.POST['password']
+		mobile_id=request.POST['id']
 		user = authenticate(username=email, password=password)
 		if user is not None:
 			if user.is_active:
 				login(request, user)
 				user.lastLoginDate=datetime.now()
+				user.userprofile.mobile_id=mobile_id
 				user.save()
 				return JsonResponse({'success':1,'message':'Success'})
 			else:

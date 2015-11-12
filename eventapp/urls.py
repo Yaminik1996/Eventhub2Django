@@ -13,4 +13,7 @@ urlpatterns = patterns('',
     # url(r'^loginuser/', 'authentication.views._loginuser'),
     # url(r'^dashboard/', 'authentication.views.dashboard'),
     # url(r'^logout/', 'authentication.views._logout'),
+    url(r'^getevent/', 'evm.views.getEvent'),
+    url(r'^iamgoing/', 'evm.views.iamgoing'),
+    url(r'^getmyevents/', 'evm.views.getMyEvents'),
 )

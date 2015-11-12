@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 # Create your models here.
 
 
@@ -55,3 +55,11 @@ class Content(models.Model):
     description = models.TextField(max_length=128)
     def __unicode__(self):
 		return self.event.name
+
+
+class UserEvents(models.Model):
+    event=models.ForeignKey(Event, related_name='event')
+    user=models.ForeignKey(User,related_name='user')
+    def __unicode__(self):
+        return self.user.username
+        
