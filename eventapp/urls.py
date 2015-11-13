@@ -20,5 +20,6 @@ urlpatterns = patterns('',
     url(r'^iamgoing/', 'evm.views.iamgoing'),
     url(r'^getmyevents/', 'evm.views.getMyEvents'),
     url(r'^addfeedback/', 'evm.views.addfeedback'),
+    url(r'^geteventusers/', 'evm.views.getuserlist'),
 
 )

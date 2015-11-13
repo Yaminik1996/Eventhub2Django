@@ -89,16 +89,33 @@ def getEvent(request):
 		response['contact_name_2']=event.contact_name_2
 		response['contact_number_2']=event.contact_number_2
 		response['venue']=event.venue
+		response['user_count']=len(users)
 		response['content']=event.content.description
 		response['average_rating']=ratings.aggregate(Avg('rating'))['rating__avg']
 		try:
 			img=open(event.content.image.path,'rb')
 			data=img.read()
-			response['image']="data:image/jpg;base64,%s" % data.encode('base64')
+			response['image']="%s" % data.encode('base64')
 		except IOError:
 			return event.content.image.url
 		return JsonResponse(response)
 	return JsonResponse({'success': 0})
+
+
+@csrf_exempt
+def getuserlist(request):
+	if request.method == "POST":
+		eventid=request.POST['id']
+		event=Event.objects.get(id=eventid)
+		users=UserEvents.objects.filter(event=event)
+		response={}
+		response['users']=[]
+		for u in users:
+			response['users'].append(u.user.username)
+		return JsonResponse(dict(users=response['users']))
+	return JsonResponse({'success':0})
+
+
 
 @csrf_exempt
 def iamgoing(request):
