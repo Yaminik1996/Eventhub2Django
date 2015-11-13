@@ -14,6 +14,8 @@ urlpatterns = patterns('',
     # url(r'^dashboard/', 'authentication.views.dashboard'),
     # url(r'^logout/', 'authentication.views._logout'),
     url(r'^getevent/', 'evm.views.getEvent'),
+    url(r'^geteventd/', 'evm.views.get_list_date'),
+    url(r'^geteventu/', 'evm.views.get_list_upcoming'),
     url(r'^iamgoing/', 'evm.views.iamgoing'),
     url(r'^getmyevents/', 'evm.views.getMyEvents'),
 )

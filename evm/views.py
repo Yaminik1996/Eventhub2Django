@@ -3,19 +3,47 @@ from django.core import serializers
 from evm.models import Event,Content,UserEvents
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect,JsonResponse
-import time
+import datetime
 from django.contrib.auth.models import User
 # Create your views here.
+
+@csrf_exempt
+def get_list_upcoming(request):
+	response={}
+	if request.method == "POST":
+		date=request.POST['date']
+		dt=datetime.datetime.strptime(date, "%Y-%m-%d") 
+		end_date = dt + datetime.timedelta(days=30)
+		events=Event.objects.filter(date_time__range = (dt,end_date))
+		responsef=[]
+		for e in events:
+			response={}
+			response['id']=e.id
+			response['name']=e.name
+			response['date']=e.date_time
+			response['venue']=e.venue
+			responsef.append(response)
+		return JsonResponse(dict(events=responsef))
+	return JsonResponse({'success': 0})
+
+
 
 @csrf_exempt
 def get_list_date(request):
 	response={}
 	if request.method == "POST":
 		date=request.POST['date']
-		dt=time.strptime(date, "%d %m %y").date() 
+		dt=datetime.datetime.strptime(date, "%Y-%m-%d") 
 		events=Event.objects.filter(date_time__year=dt.year).filter(date_time__month=dt.month).filter(date_time__day=dt.day)
-		serialized_obj = serializers.serialize('json',events)
-		return serialized_obj
+		responsef=[]
+		for e in events:
+			response={}
+			response['id']=e.id
+			response['name']=e.name
+			response['date']=e.date_time
+			response['venue']=e.venue
+			responsef.append(response)
+		return JsonResponse(dict(events=responsef))
 	return JsonResponse({'success': 0})
 
 
@@ -26,6 +54,7 @@ def getEvent(request):
 		event=Event.objects.get(id=eventid)
 		users=UserEvents.objects.filter(event=event)
 		response={}
+		response['id']=event.id
 		response['name']=event.name
 		response['date']=event.date_time
 		response['club']=event.club
