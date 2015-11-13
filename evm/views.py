@@ -7,6 +7,11 @@ import datetime
 from django.contrib.auth.models import User
 # Create your views here.
 
+
+def homepage(request):
+	return render(request,'site/home.html',{})
+
+
 @csrf_exempt
 def get_list_upcoming(request):
 	response={}

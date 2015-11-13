@@ -8,7 +8,6 @@ from django.contrib import messages
 # Create your views here.
 
 
-
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -30,12 +29,28 @@ def _login(request):
 				login(request, user)
 				user.lastLoginDate=datetime.now()
 				user.userprofile.mobile_id=mobile_id
+				user.userprofile.loggedIn=True
 				user.save()
 				return JsonResponse({'success':1,'message':'Success'})
 			else:
 				return JsonResponse({'success':0,'message':'Inactive'}) 
 		else:
 			return JsonResponse({'success':0,'message':'Email/Password incorrect'})
+
+
+@csrf_exempt
+def _logout(request):
+	if request.method == "POST":
+		userid=request.POST['id']
+		user = User.objects.get(id=userid)
+		if user is not None:
+			user.userprofile.loggedIn=False
+			user.save()
+			return JsonResponse({'success':1})
+		else:
+			return JsonResponse({'success':0, 'message': "Invalid userid"})
+	return JsonResponse({'success': 0, 'message': 'Invalid method'})
+
 
 @csrf_exempt
 def register(request):	

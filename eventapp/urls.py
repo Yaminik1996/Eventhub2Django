@@ -5,7 +5,7 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'eventapp.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
-
+    url(r'^$','evm.views.homepage'),
     url(r'^admin/', include(admin.site.urls)),
     # url(r'^$', 'authentication.views.index'),
     url(r'^login/', 'authentication.views._login'),

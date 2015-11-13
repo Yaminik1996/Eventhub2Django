@@ -9,5 +9,6 @@ class UserProfile(models.Model):
     ipaddress = models.URLField(max_length=25)
     lastLoginDate = models.DateTimeField(blank=True)
     mobile_id=models.CharField(max_length=200)
+    loggedIn=models.BooleanField(default=False)
     def __unicode__(self):
     	return self.user.first_name
