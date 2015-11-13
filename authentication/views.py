@@ -22,13 +22,13 @@ def _login(request):
 		username=request.POST.get('email',False)
 		email = request.POST['email']
 		password = request.POST['password']
-		mobile_id=request.POST['id']
+		# mobile_id=request.POST['id']
 		user = authenticate(username=email, password=password)
 		if user is not None:
 			if user.is_active:
 				login(request, user)
 				user.lastLoginDate=datetime.now()
-				user.userprofile.mobile_id=mobile_id
+				# user.userprofile.mobile_id=mobile_id
 				user.userprofile.loggedIn=True
 				user.save()
 				return JsonResponse({'success':1,'message':'Success'})
@@ -59,6 +59,7 @@ def register(request):
 	if request.method == "POST":
 		user_form = UserForm(data=request.POST)
 		profile_form = UserProfileForm(data=request.POST)
+		mobile_id=request.POST['mobile_id']
 		print profile_form
 		if user_form.is_valid() and profile_form.is_valid():
 			
@@ -68,6 +69,7 @@ def register(request):
 			user.save()
 			profile = profile_form.save(commit=False)
 			profile.user = user
+			profile.mobile_id=mobile_id
 			profile.lastLoginDate = datetime.now()
 			profile.ipaddress=get_client_ip(request)
 			profile.save()
