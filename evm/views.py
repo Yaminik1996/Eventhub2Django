@@ -123,10 +123,10 @@ def getuserlist(request):
 def iamgoing(request):
 	if request.method == "POST":
 		eventid=request.POST['event_id']
-		userid=request.POST['user_id']
+		email=request.POST['email']
 		uevent=UserEvents()
 		event=Event.objects.get(id=eventid)
-		user=User.objects.get(id=userid)
+		user=User.objects.get(username=email)
 		uevent.event=event
 		uevent.user=user
 		uevent.save()
