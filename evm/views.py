@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect,JsonResponse
 import datetime
 from django.contrib.auth.models import User
 from django.db.models import Avg
+from django.contrib.sites.models import get_current_site
 # Create your views here.
 
 
@@ -37,7 +38,7 @@ def get_list_previous(request):
 	response={}
 	if request.method == "POST":
 		date=request.POST['date']
-		dt=datetime.datetime.strptime(date, "%Y-%m-%d") 
+		dt=datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S") 
 		end_date = dt - datetime.timedelta(days=30)
 		events=Event.objects.filter(date_time__range = (dt,end_date))
 		responsef=[]
@@ -92,12 +93,13 @@ def getEvent(request):
 		response['user_count']=len(users)
 		response['content']=event.content.description
 		response['average_rating']=ratings.aggregate(Avg('rating'))['rating__avg']
-		try:
-			img=open(event.content.image.path,'rb')
-			data=img.read()
-			response['image']="%s" % data.encode('base64')
-		except IOError:
-			return event.content.image.url
+		# try:
+		# 	img=open(event.content.image.path,'rb')
+		# 	data=img.read()
+		# 	response['image']="%s" % data.encode('base64')
+		# except IOError:
+		# 	return event.content.image.url
+		response['image'] = get_current_site(request).domain+event.content.image.url
 		return JsonResponse(response)
 	return JsonResponse({'success': 0})
 

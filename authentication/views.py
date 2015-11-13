@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.contrib.auth.models import User
+from authentication.models import UserProfile
 from authentication.forms import UserForm,UserProfileForm
 from datetime import datetime
 from django.http import HttpResponseRedirect,JsonResponse
@@ -57,12 +59,12 @@ def register(request):
 	registered = False
 	response={}
 	if request.method == "POST":
+		method=request.POST['method']
 		user_form = UserForm(data=request.POST)
 		profile_form = UserProfileForm(data=request.POST)
 		mobile_id=request.POST['mobile_id']
 		print profile_form
 		if user_form.is_valid() and profile_form.is_valid():
-			
 			user = user_form.save(commit=False)
 			user.set_password(user.password)
 			user.is_active=True
@@ -80,3 +82,32 @@ def register(request):
 			response['success']=0
 	return JsonResponse(response)
 
+@csrf_exempt
+def register_2(request):	
+	registered = False
+	response={}
+	response['success']=0
+	if request.method == "POST":
+		method=request.POST['method']
+		user = User()
+		profile=UserProfile()
+		name=request.POST['name']
+		email=request.POST['email']
+		password=""
+		if method == 'normal':
+			password=request.POST['password']
+		mobile_id=request.POST['mobile_id']
+		user.first_name=name
+		user.username=email
+		user.password=password
+		user.set_password(user.password)
+		user.is_active=True
+		user.save()
+		profile.user = user
+		profile.mobile_id=mobile_id
+		profile.lastLoginDate = datetime.now()
+		profile.ipaddress=get_client_ip(request)
+		profile.save()
+		registered = True
+		response['success']=1
+	return JsonResponse(response)

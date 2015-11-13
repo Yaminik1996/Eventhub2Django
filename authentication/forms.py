@@ -23,5 +23,4 @@ class UserProfileForm(ModelForm):
 	"""form for extended auth User model"""
 	class Meta:
 		model = UserProfile
-		exclude=('signUpDate','ipaddress','lastLoginDate')
-		fields = ('collegeName',)
+		exclude=('signUpDate','ipaddress','lastLoginDate','collegeName','loggedIn')
