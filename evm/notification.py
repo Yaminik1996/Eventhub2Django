@@ -2,7 +2,7 @@ def send_notification(event, registration_ids):
 	registration_ids = [id.encode('utf-8') for id in registration_ids]
 	data = {}
 	import json
-	data['message'] = 'The event '+event.name+'\'s schedule has changed to '+event.date_time.strftime('%d/%m/%Y at %H:%M')
+	data['message'] = 'The event '+event.name+'\'s schedule has changed to '+event.date_time.strftime('%d/%m/%Y at %H:%M') +' at '+event.venue
 	fields = {'data':data, 'registration_ids' :registration_ids}
 	headers = {'Authorization': 'key=AIzaSyCt1znpGShP057T3OhEUj_W8EG1wKETaSE','Content-Type': 'application/json' }
 	print fields
