@@ -11,4 +11,4 @@ class UserProfile(models.Model):
     mobile_id=models.CharField(max_length=200)
     loggedIn=models.BooleanField(default=False)
     def __unicode__(self):
-    	return self.user.first_name
+    	return self.user.username
