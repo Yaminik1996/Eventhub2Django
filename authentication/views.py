@@ -33,7 +33,7 @@ def _login(request):
 				# user.userprofile.mobile_id=mobile_id
 				user.userprofile.loggedIn=True
 				user.save()
-				return JsonResponse({'success':1,'message':'Success'})
+				return JsonResponse({'success':1,'message':'Success','email': email,'id':user.id})
 			else:
 				return JsonResponse({'success':0,'message':'Inactive'}) 
 		else:
@@ -85,11 +85,11 @@ def register(request):
 @csrf_exempt
 def register_2(request):	
 	registered = False
+	flag=0
 	response={}
 	response['success']=0
 	if request.method == "POST":
 		method=request.POST['method']
-		user = User()
 		profile=UserProfile()
 		name=request.POST['name']
 		email=request.POST['email']
@@ -97,17 +97,29 @@ def register_2(request):
 		if method == 'normal':
 			password=request.POST['password']
 		mobile_id=request.POST['mobile_id']
-		user.first_name=name
-		user.username=email
-		user.password=password
-		user.set_password(user.password)
-		user.is_active=True
-		user.save()
-		profile.user = user
-		profile.mobile_id=mobile_id
-		profile.lastLoginDate = datetime.now()
-		profile.ipaddress=get_client_ip(request)
-		profile.save()
-		registered = True
-		response['success']=1
+		try:
+			user=User.objects.get(username=email)
+		except User.DoesNotExist:
+			user=User()
+			flag=1
+		if flag == 1:
+			user.first_name=name
+			user.username=email
+			user.password=password
+			user.set_password(user.password)
+			user.is_active=True
+			user.save()
+			profile.user = user
+			profile.mobile_id=mobile_id
+			profile.lastLoginDate = datetime.now()
+			profile.ipaddress=get_client_ip(request)
+			profile.save()
+			registered = True
+			response['success']=1
+			response['email']=email
+			response['id']=user.id
+		else:
+			response['success']=1
+			response['email']=user.username
+			response['id']=user.id
 	return JsonResponse(response)
