@@ -33,7 +33,7 @@ def _login(request):
 				# user.userprofile.mobile_id=mobile_id
 				user.userprofile.loggedIn=True
 				user.save()
-				return JsonResponse({'success':1,'message':'Success'})
+				return JsonResponse({'success':1,'message':'Success','email': email,'id':user.id})
 			else:
 				return JsonResponse({'success':0,'message':'Inactive'}) 
 		else:
