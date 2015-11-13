@@ -62,4 +62,12 @@ class UserEvents(models.Model):
     user=models.ForeignKey(User,related_name='user')
     def __unicode__(self):
         return self.user.username
+
+class EventRatings(models.Model):
+    user=models.ForeignKey(User,related_name='userfeedback')
+    event=models.ForeignKey(Event,related_name='eventfeedback')
+    rating=models.IntegerField(default=0)
+    feedback=models.TextField(max_length=300)
+    def __unicode__(self):
+        return self.user.username+" : "+self.event.name
         

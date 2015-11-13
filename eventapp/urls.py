@@ -16,6 +16,9 @@ urlpatterns = patterns('',
     url(r'^getevent/', 'evm.views.getEvent'),
     url(r'^geteventd/', 'evm.views.get_list_date'),
     url(r'^geteventu/', 'evm.views.get_list_upcoming'),
+    url(r'^geteventp/', 'evm.views.get_list_previous'),
     url(r'^iamgoing/', 'evm.views.iamgoing'),
     url(r'^getmyevents/', 'evm.views.getMyEvents'),
+    url(r'^addfeedback/', 'evm.views.addfeedback'),
+
 )
