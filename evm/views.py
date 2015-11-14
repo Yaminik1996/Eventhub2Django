@@ -132,7 +132,7 @@ def getuserlist(request):
 		response={}
 		response['users']=[]
 		for u in users:
-			response['users'].append(u.user.username)
+			response['users'].append(u.user.first_name)
 		return JsonResponse(dict(users=response['users']))
 	return JsonResponse({'success':0})
 
