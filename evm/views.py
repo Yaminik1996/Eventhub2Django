@@ -92,6 +92,12 @@ def getEvent(request):
 		except EventRatings.DoesNotExist:
 			response['feedback'] = 0
 		
+		cur_time = datetime.datetime.now()
+		event_time = event.date_time 
+		if event_time < cur_time:
+			response['started'] = 1
+		else:
+			response['started'] = 0
 		users=UserEvents.objects.filter(event=event)
 		ratings=EventRatings.objects.filter(event=event)
 		response['id']=event.id
