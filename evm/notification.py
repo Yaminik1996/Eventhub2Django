@@ -2,6 +2,7 @@ def send_notification(event, registration_ids):
 	registration_ids = [id.encode('utf-8') for id in registration_ids]
 	data = {}
 	import json
+	# data['message'] = 'test notif'
 	data['message'] = 'The event '+event.name+'\'s schedule has changed to '+event.date_time.strftime('%d/%m/%Y at %H:%M') +' at '+event.venue
 	fields = {'data':data, 'registration_ids' :registration_ids}
 	headers = {'Authorization': 'key=AIzaSyDjYk4nCrXn6Nb2VL2EZgGbebT7NdLJ5s8','Content-Type': 'application/json' }
@@ -13,7 +14,7 @@ def send_notification(event, registration_ids):
 	print r.status_code
 
 if __name__ == "__main__":
-	ids = ["APA91bGzrX6HEgdPg4XCI-30TE9gTg9YeUFayr7xb8KDDl6WbyzXBJhfNIzeadptI_pjcfRTMVpjdAVZraHIC9m6t_-9o6lEPp-hb13RyBBtN5MJmNzk-6bAme8OHI0TcTFH4yRu4nhD"]
+	ids = ["APA91bHEJIIqZZgZZ7RrAaI27d7-p3hrf5CUUNn6wq6V2TYSbAapOwTiTGOCIqYl4vmcuqI-Ux0ruypydm-ZqZO5qkqT4e4s4Zn2jv_6utzFDpAc5MTFuj-FarnMhzAqThe5c6QBxQwn"]
 	event = {}
 	event["name"] = "Test event"
 	event["date_time"] = "tomorrow"

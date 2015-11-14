@@ -76,11 +76,24 @@ def get_list_date(request):
 @csrf_exempt
 def getEvent(request):
 	if request.method == "POST":
+		response={}
 		eventid=request.POST['id']
+		email = request.POST['email']
+		user = User.objects.get(username = email)
 		event=Event.objects.get(id=eventid)
+		try:
+			uevent = UserEvents.objects.get(user = user, event = event)
+			response['going'] = 1
+		except UserEvents.DoesNotExist:
+			response['going'] = 0
+		try:
+			ufeedback = EventRatings.objects.get(user = user, event = event)
+			response['feedback'] = 1
+		except EventRatings.DoesNotExist:
+			response['feedback'] = 0
+		
 		users=UserEvents.objects.filter(event=event)
 		ratings=EventRatings.objects.filter(event=event)
-		response={}
 		response['id']=event.id
 		response['name']=event.name
 		response['date']=event.date_time
@@ -127,10 +140,14 @@ def iamgoing(request):
 		uevent=UserEvents()
 		event=Event.objects.get(id=eventid)
 		user=User.objects.get(username=email)
-		uevent.event=event
-		uevent.user=user
-		uevent.save()
-		return JsonResponse({'success': 1})	
+		try:
+			uevent = UserEvents.objects.get(event = event, user = user)
+			return JsonResponse({'success': 1})	
+		except UserEvents.DoesNotExist:
+			uevent.event=event
+			uevent.user=user
+			uevent.save()
+			return JsonResponse({'success': 1})	
 	return JsonResponse({'success': 0})
 
 @csrf_exempt
