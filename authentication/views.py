@@ -119,6 +119,8 @@ def register_2(request):
 			response['email']=email
 			response['id']=user.id
 		else:
+			user.mobile_id=mobile_id
+			user.save()
 			response['success']=1
 			response['email']=user.username
 			response['id']=user.id
