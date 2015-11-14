@@ -136,9 +136,8 @@ def iamgoing(request):
 @csrf_exempt
 def getMyEvents(request):
 	if request.method == "POST":
-		userid=request.POST['user_id']
-		print userid
-		user=User.objects.get(id=userid)
+		email=request.POST['email']
+		user=User.objects.get(username=email)
 		events=UserEvents.objects.filter(user=user)
 		print events
 		responsef=[]
@@ -156,11 +155,11 @@ def getMyEvents(request):
 def addfeedback(request):
 	if request.method == "POST":
 		event_id=request.POST['event_id']
-		user_id=request.POST['user_id']
+		email=request.POST['email']
 		rating=request.POST['rating']
 		feedback=request.POST['feedback']
 		event=Event.objects.get(id=event_id)
-		user=User.objects.get(id=user_id)
+		user=User.objects.get(username=email)
 		review=EventRatings()
 		review.event=event
 		review.user=user
