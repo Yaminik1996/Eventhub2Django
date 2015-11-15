@@ -2,11 +2,15 @@ from django.shortcuts import render
 from django.core import serializers
 from evm.models import Event,Content,UserEvents,EventRatings
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponseRedirect,JsonResponse
+from django.http import HttpResponseRedirect,JsonResponse,HttpResponse
 import datetime
 from django.contrib.auth.models import User
 from django.db.models import Avg
 from django.contrib.sites.models import get_current_site
+from django.utils.encoding import smart_str
+from django.conf import settings
+import os
+from django.core.files import File
 # Create your views here.
 
 
@@ -191,6 +195,22 @@ def addfeedback(request):
 		review.save()
 		return JsonResponse({'sucess':1, 'message': 'Review recorded'})
 	return JsonResponse({'sucess':0, 'message': 'Invalid'})
+
+def download(request):
+	if request.user.is_superuser:
+	    db_engine = settings.DATABASES['default']['ENGINE']
+	    if db_engine == 'django.db.backends.sqlite3':
+	        db_path = settings.DATABASES['default']['NAME']
+	        dbfile = File(open(db_path, "rb"))
+	        response = HttpResponse(dbfile,content_type='application/x-sqlite3')
+	        response['Content-Disposition'] = 'attachment; filename=%s' % db_path
+	        response['Content-Length'] = dbfile.size
+	        return response
+	    else:
+	        return HttpResponse("settings.DATABASES['default']['ENGINE'] is %s,<br />\
+	                             only for 'django.db.backends.sqlite3' online backup is posible." % (db_engine))
+	else:
+		return HttpResponse("Only admin can access this url.")
 
 
 
