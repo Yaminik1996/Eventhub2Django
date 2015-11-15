@@ -160,6 +160,21 @@ def iamgoing(request):
 			return JsonResponse({'success': 1})	
 	return JsonResponse({'success': 0})
 
+
+@csrf_exempt
+def iamnotgoing(request):
+	if request.method == "POST":
+		eventid=request.POST['event_id']
+		email=request.POST['email']
+		uevent=UserEvents()
+		event=Event.objects.get(id=eventid)
+		user=User.objects.get(username=email)
+		uevent = UserEvents.objects.get(event = event, user = user)
+		uevent.delete()
+		return JsonResponse({'success': 1})	
+	return JsonResponse({'success': 0})
+
+
 @csrf_exempt
 def getMyEvents(request):
 	if request.method == "POST":
