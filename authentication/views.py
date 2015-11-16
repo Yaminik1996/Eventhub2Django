@@ -119,9 +119,10 @@ def register_2(request):
 			response['email']=email
 			response['id']=user.id
 		else:
-			user.mobile_id=mobile_id
+			user.userprofile.mobile_id=mobile_id
 			user.save()
 			response['success']=1
+			response['message']="User is already present"
 			response['email']=user.username
 			response['id']=user.id
 	return JsonResponse(response)

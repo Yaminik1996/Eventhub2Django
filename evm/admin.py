@@ -6,12 +6,12 @@ import notification
 
 class EventAdmin(admin.ModelAdmin):
 	exclude = ('addedby',)
-	def queryset(self,request,queryset):
-		print "Check"
-		if request.user.is_superuser:
-			return queryset
-		else:
-			return queryset.filter(addedby=request.user)
+	# def queryset(self,request,queryset):
+	# 	print "Check"
+	# 	if request.user.is_superuser:
+	# 		return queryset
+	# 	else:
+	# 		return queryset.filter(addedby=request.user)
 	def save_model(self, request, obj, form, change):
 		if getattr(obj, 'addedby', None) is None:
 			print "None"
