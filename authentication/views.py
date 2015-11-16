@@ -120,6 +120,7 @@ def register_2(request):
 			response['id']=user.id
 		else:
 			user.userprofile.mobile_id=mobile_id
+			user.userprofile.save()
 			user.save()
 			response['success']=1
 			response['message']="User is already present"
