@@ -43,6 +43,7 @@ class Event(models.Model):
     contact_number_2 = models.CharField(max_length=10)
     venue = models.CharField(max_length=128)
     alias = models.CharField(max_length=128)
+    addedby=models.ForeignKey(User, null=True, blank=True)
     def __unicode__(self):
 		return self.name
 
@@ -53,6 +54,7 @@ class Content(models.Model):
     event = models.OneToOneField(Event, related_name='content')
     image = models.ImageField(upload_to=get_image_path, blank=True, null=True)
     description = models.TextField(max_length=128)
+    addedby=models.ForeignKey(User, null=True, blank=True)
     def __unicode__(self):
 		return self.event.name
 
