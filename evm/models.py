@@ -29,6 +29,22 @@ class Event(models.Model):
         ('music', 'music'),
         ('quiz', 'quiz'),
         ('DLD', 'DLD'),
+        ('Painting','Painting'),
+        ('LND','LND'),
+        ('PGC','PGC'),
+        ('Science and Hobbies','Science and Hobbies'),
+        ('EA-HAM','EA-HAM'),
+        ('Value Education','Value Education'),
+        ('Innovation','Innovation'),
+        ('Film','Film'),
+        ('ISE','ISE'),
+        ('ISTE','ISTE'),
+        ('Youth Red Cross','Youth Red Cross'),
+        ('FISA','FISA'),
+        ('Magazine','Magazine'),
+        ('HoneyBee','HoneyBee'),
+        ('SpicMacay','SpicMacay'),
+        ('Radio','Radio'),
     )
 
 
