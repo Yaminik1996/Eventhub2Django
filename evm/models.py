@@ -47,6 +47,15 @@ class Event(models.Model):
         ('SpicMacay','SpicMacay'),
         ('Radio','Radio'),
         ('Branch','Branch'),
+        ('CSEA','CSEA'),
+        ('CHEA','CHEA'),
+        ('ECEA','ECEA'),
+        ('MEA','MEA'),
+        ('EEEA','EEEA'),
+        ('CEA','CEA'),
+        ('MBA','MBA'),
+        ('META','META'),
+        ('BIOTECH','BIOTECH'),
     )
 
 

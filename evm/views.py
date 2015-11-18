@@ -28,7 +28,7 @@ def get_list_upcoming(request):
 		date=request.POST['date']
 		dt=datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S") 
 		end_date = dt + datetime.timedelta(days=30)
-		events=Event.objects.filter(date_time__range = (dt,end_date))
+		events=Event.objects.filter(date_time__range = (dt,end_date)).order_by('date_time')
 		responsef=[]
 		for e in events:
 			response={}
@@ -67,7 +67,7 @@ def get_list_date(request):
 	if request.method == "POST":
 		date=request.POST['date']
 		dt=datetime.datetime.strptime(date, "%Y-%m-%d") 
-		events=Event.objects.filter(date_time__year=dt.year).filter(date_time__month=dt.month).filter(date_time__day=dt.day)
+		events=Event.objects.filter(date_time__year=dt.year).filter(date_time__month=dt.month).filter(date_time__day=dt.day).order_by('date_time')
 		responsef=[]
 		for e in events:
 			response={}
