@@ -30,7 +30,11 @@ class EventAdmin(admin.ModelAdmin):
 				notification.send_notification(obj,ids)
 		return super(EventAdmin, self).save_model(request, obj, form, change)
 	def response_add(self, request, obj, post_url_continue=None):
-		return HttpResponseRedirect("/admin/evm/content/add/")
+		content=Content()
+		content.event=obj
+		content.description="Stay tuned for event details"
+		content.save()
+		return HttpResponseRedirect("/admin/evm/content/"+str(content.id)+"/")
 
 
 class ContentAdmin(admin.ModelAdmin):
