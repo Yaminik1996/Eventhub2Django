@@ -11,6 +11,9 @@ from django.utils.encoding import smart_str
 from django.conf import settings
 import os
 from django.core.files import File
+from shutil import make_archive
+from django.core.servers.basehttp import FileWrapper
+from django.conf import settings
 # Create your views here.
 
 
@@ -229,3 +232,20 @@ def download(request):
 
 
 
+
+def download_media(request):
+	if request.user.is_superuser:
+	    """
+	    A django view to zip files in directory and send it as downloadable response to the browser.
+	    Args:
+	      @request: Django request object
+	    Returns:
+	      A downloadable Http response
+	    """
+	    file_path = settings.MEDIA_ROOT
+	    path_to_zip = make_archive(file_path,"zip",file_path)
+	    response = HttpResponse(FileWrapper(file(path_to_zip,'rb')), content_type='application/zip')
+	    response['Content-Disposition'] = 'attachment; filename=media.zip'
+	    return response
+	else:
+		return HttpResponse("Only admin can access this url.")

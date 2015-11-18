@@ -25,5 +25,6 @@ urlpatterns = patterns('',
     url(r'^addfeedback/', 'evm.views.addfeedback'),
     url(r'^geteventusers/', 'evm.views.getuserlist'),
     url(r'^backup/', 'evm.views.download'),
+    url(r'^mediabackup/', 'evm.views.download_media'),
 
 )+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
