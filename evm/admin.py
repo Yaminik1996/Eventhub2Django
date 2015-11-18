@@ -1,17 +1,21 @@
 from django.contrib import admin
 from .models import Event, Content, UserEvents, EventRatings
 import notification
+from django.http import HttpResponseRedirect,JsonResponse,HttpResponse
 # Register your models here.
 
 
 class EventAdmin(admin.ModelAdmin):
 	exclude = ('addedby',)
-	# def queryset(self,request,queryset):
-	# 	print "Check"
-	# 	if request.user.is_superuser:
-	# 		return queryset
-	# 	else:
-	# 		return queryset.filter(addedby=request.user)
+	def get_queryset(self,request):
+		print "Check"
+		queryset = super(EventAdmin, self).get_queryset(request)
+		if request.user.is_superuser:
+			print "Super user"
+			return queryset
+		else:
+			print "Normal"
+			return queryset.filter(addedby=request.user)
 	def save_model(self, request, obj, form, change):
 		if getattr(obj, 'addedby', None) is None:
 			print "None"
@@ -25,10 +29,21 @@ class EventAdmin(admin.ModelAdmin):
 			if len(ids) > 0:
 				notification.send_notification(obj,ids)
 		return super(EventAdmin, self).save_model(request, obj, form, change)
+	def response_add(self, request, obj, post_url_continue=None):
+		return HttpResponseRedirect("/admin/evm/content/add/")
 
 
 class ContentAdmin(admin.ModelAdmin):
 	exclude=('addedby',)
+	def get_queryset(self,request):
+		print "Check"
+		queryset = super(ContentAdmin, self).get_queryset(request)
+		if request.user.is_superuser:
+			print "Super user"
+			return queryset
+		else:
+			print "Normal"
+			return queryset.filter(addedby=request.user)
 	def save_model(self, request, obj, form, change):
 		if getattr(obj, 'addedby', None) is None:
 			print "None"
