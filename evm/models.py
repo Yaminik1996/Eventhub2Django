@@ -23,6 +23,7 @@ class Event(models.Model):
         ('club', 'club'),
         ('IG', 'IG'),
         ('online', 'online'),
+        ('Branch', 'Branch'),
     )
     CLUB_CHOICES = (
         ('DND', 'DND'),
@@ -45,6 +46,7 @@ class Event(models.Model):
         ('HoneyBee','HoneyBee'),
         ('SpicMacay','SpicMacay'),
         ('Radio','Radio'),
+        ('Branch','Branch'),
     )
 
 
