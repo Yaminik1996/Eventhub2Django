@@ -51,14 +51,14 @@ class Event(models.Model):
     type = models.CharField(max_length=128,choices=TYPE_CHOICES, default='event')
     subtype = models.CharField(max_length=128,choices=SUBTYPE_CHOICES, default='general')
     club = models.CharField(max_length=128,choices=CLUB_CHOICES, default='general')
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, unique=True)
     date_time = models.DateTimeField()
     contact_name_1 = models.CharField(max_length=128)
     contact_number_1 = models.CharField(max_length=10)
     contact_name_2 = models.CharField(max_length=128)
     contact_number_2 = models.CharField(max_length=10)
     venue = models.CharField(max_length=128)
-    alias = models.CharField(max_length=128)
+    alias = models.CharField(max_length=128,unique=True)
     addedby=models.ForeignKey(User, null=True, blank=True)
     def __unicode__(self):
 		return self.name
