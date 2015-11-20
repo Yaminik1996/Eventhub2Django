@@ -15,7 +15,7 @@ class EventAdmin(admin.ModelAdmin):
 			return queryset
 		else:
 			print "Normal"
-			return queryset.filter(addedby=request.user)
+			return queryset.filter(addedby=request.user)    
 	def save_model(self, request, obj, form, change):
 		if getattr(obj, 'addedby', None) is None:
 			print "None"
@@ -33,12 +33,17 @@ class EventAdmin(admin.ModelAdmin):
 		content=Content()
 		content.event=obj
 		content.description="Stay tuned for event details"
+		content.addedby=request.user
 		content.save()
 		return HttpResponseRedirect("/admin/evm/content/"+str(content.id)+"/")
 
 
 class ContentAdmin(admin.ModelAdmin):
 	exclude=('addedby',)
+	def render_change_form(self, request, context, *args, **kwargs):
+		if not request.user.is_superuser:
+			context['adminform'].form.fields['event'].queryset = Event.objects.filter(addedby=request.user)
+		return super(ContentAdmin, self).render_change_form(request, context, args, kwargs)         
 	def get_queryset(self,request):
 		print "Check"
 		queryset = super(ContentAdmin, self).get_queryset(request)
