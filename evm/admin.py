@@ -63,7 +63,7 @@ class NotificationAdmin(admin.ModelAdmin):
 		ids = users
 			# ids = ["APA91bGzrX6HEgdPg4XCI-30TE9gTg9YeUFayr7xb8KDDl6WbyzXBJhfNIzeadptI_pjcfRTMVpjdAVZraHIC9m6t_-9o6lEPp-hb13RyBBtN5MJmNzk-6bAme8OHI0TcTFH4yRu4nhD"]
 		if len(ids) > 0:
-			notification.send_notification(obj.event,ids)
+			notification.send_notification_custom(obj.event,ids,obj.message)
 		return super(NotificationAdmin, self).save_model(request, obj, form, change)
 
 admin.site.register(Event, EventAdmin)
