@@ -120,6 +120,7 @@ def register_2(request):
 			response['id']=user.id
 		else:
 			user.userprofile.mobile_id=mobile_id
+			user.first_name=name
 			user.userprofile.save()
 			user.save()
 			response['success']=1

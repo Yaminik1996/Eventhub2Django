@@ -80,7 +80,7 @@ class Event(models.Model):
 class Content(models.Model):
     event = models.OneToOneField(Event, related_name='content')
     image = models.ImageField(upload_to=get_image_path, blank=True, null=True)
-    description = models.TextField(max_length=128)
+    description = models.TextField(max_length=500)
     addedby=models.ForeignKey(User, null=True, blank=True)
     def __unicode__(self):
 		return self.event.name
@@ -99,4 +99,12 @@ class EventRatings(models.Model):
     feedback=models.TextField(max_length=300)
     def __unicode__(self):
         return self.user.username+" : "+self.event.name
+
+
+class Notification(models.Model):
+    event=models.ForeignKey(Event,related_name='notifevent')
+    message=models.TextField(max_length=100)
+    addedon=models.DateTimeField(auto_now=True)
+    def __unicode__(self):
+        return self.event.name+" : "+self.message[:20]
         

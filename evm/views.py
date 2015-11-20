@@ -14,6 +14,8 @@ from django.core.files import File
 from shutil import make_archive
 from django.core.servers.basehttp import FileWrapper
 from django.conf import settings
+from authentication.views import get_client_ip
+from authentication.models import UserProfile
 # Create your views here.
 
 
@@ -86,7 +88,23 @@ def getEvent(request):
 		response={}
 		eventid=request.POST['id']
 		email = request.POST['email']
-		user = User.objects.get(username = email)
+		try:
+			user = User.objects.get(username = email)
+		except User.DoesNotExist:
+			user=User()
+			user.first_name=email.split('@')[0]
+			user.username=email
+			user.password=""
+			user.set_password(user.password)
+			user.is_active=True
+			user.save()
+			profile=UserProfile()
+			profile.user = user
+			profile.mobile_id="test12345"
+			profile.lastLoginDate = datetime.datetime.now()
+			profile.ipaddress=get_client_ip(request)
+			profile.save()	
+			response['message']="User not found....creating user"		
 		event=Event.objects.get(id=eventid)
 		try:
 			uevent = UserEvents.objects.get(user = user, event = event)
