@@ -53,6 +53,7 @@ class ContentAdmin(admin.ModelAdmin):
 			print "None"
 			obj.addedby = request.user
 			obj.save()
+		return super(ContentAdmin, self).save_model(request, obj, form, change)
 
 
 admin.site.register(Event, EventAdmin)
