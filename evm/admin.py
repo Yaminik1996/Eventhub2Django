@@ -62,7 +62,26 @@ class ContentAdmin(admin.ModelAdmin):
 
 
 class NotificationAdmin(admin.ModelAdmin):
+	exclude=('addedby',)
+	def render_change_form(self, request, context, *args, **kwargs):
+		if not request.user.is_superuser:
+			context['adminform'].form.fields['event'].queryset = Event.objects.filter(addedby=request.user)
+		return super(NotificationAdmin, self).render_change_form(request, context, args, kwargs)    
+
+	def get_queryset(self,request):
+		print "Check"
+		queryset = super(NotificationAdmin, self).get_queryset(request)
+		if request.user.is_superuser:
+			print "Super user"
+			return queryset
+		else:
+			print "Normal"
+			return queryset.filter(addedby=request.user)     
 	def save_model(self, request, obj, form, change):
+		if getattr(obj, 'addedby', None) is None:
+			print "None"
+			obj.addedby = request.user
+			obj.save()
 		users = UserEvents.objects.values_list('user__userprofile__mobile_id', flat=True).filter(event = obj.event)
 		print "list is------------------------ ",users
 		ids = users

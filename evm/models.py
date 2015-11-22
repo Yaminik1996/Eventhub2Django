@@ -105,6 +105,7 @@ class Notification(models.Model):
     event=models.ForeignKey(Event,related_name='notifevent')
     message=models.TextField(max_length=100)
     addedon=models.DateTimeField(auto_now=True)
+    addedby=models.ForeignKey(User, null=True, blank=True)
     def __unicode__(self):
         return self.event.name+" : "+self.message[:20]
         
