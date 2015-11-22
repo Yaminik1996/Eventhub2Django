@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'eventapp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'eventhub',
+        'NAME': 'eventhub2',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',

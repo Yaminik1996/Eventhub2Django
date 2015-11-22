@@ -15,7 +15,7 @@ class EventAdmin(admin.ModelAdmin):
 			return queryset
 		else:
 			print "Normal"
-			return queryset.filter(addedby=request.user)
+			return queryset.filter(addedby=request.user)    
 	def save_model(self, request, obj, form, change):
 		if getattr(obj, 'addedby', None) is None:
 			print "None"
@@ -33,12 +33,17 @@ class EventAdmin(admin.ModelAdmin):
 		content=Content()
 		content.event=obj
 		content.description="Stay tuned for event details"
+		content.addedby=request.user
 		content.save()
 		return HttpResponseRedirect("/admin/evm/content/"+str(content.id)+"/")
 
 
 class ContentAdmin(admin.ModelAdmin):
 	exclude=('addedby',)
+	def render_change_form(self, request, context, *args, **kwargs):
+		if not request.user.is_superuser:
+			context['adminform'].form.fields['event'].queryset = Event.objects.filter(addedby=request.user)
+		return super(ContentAdmin, self).render_change_form(request, context, args, kwargs)         
 	def get_queryset(self,request):
 		print "Check"
 		queryset = super(ContentAdmin, self).get_queryset(request)
@@ -57,14 +62,33 @@ class ContentAdmin(admin.ModelAdmin):
 
 
 class NotificationAdmin(admin.ModelAdmin):
+	exclude=('addedby',)
+	def render_change_form(self, request, context, *args, **kwargs):
+		if not request.user.is_superuser:
+			context['adminform'].form.fields['event'].queryset = Event.objects.filter(addedby=request.user)
+		return super(NotificationAdmin, self).render_change_form(request, context, args, kwargs)    
+
+	def get_queryset(self,request):
+		print "Check"
+		queryset = super(NotificationAdmin, self).get_queryset(request)
+		if request.user.is_superuser:
+			print "Super user"
+			return queryset
+		else:
+			print "Normal"
+			return queryset.filter(addedby=request.user)     
 	def save_model(self, request, obj, form, change):
+		if getattr(obj, 'addedby', None) is None:
+			print "None"
+			obj.addedby = request.user
+			obj.save()
 		users = UserEvents.objects.values_list('user__userprofile__mobile_id', flat=True).filter(event = obj.event)
 		print "list is------------------------ ",users
 		ids = users
 			# ids = ["APA91bGzrX6HEgdPg4XCI-30TE9gTg9YeUFayr7xb8KDDl6WbyzXBJhfNIzeadptI_pjcfRTMVpjdAVZraHIC9m6t_-9o6lEPp-hb13RyBBtN5MJmNzk-6bAme8OHI0TcTFH4yRu4nhD"]
 		if len(ids) > 0:
-			notification.send_notification(obj,ids)
-		return super(EventAdmin, self).save_model(request, obj, form, change)
+			notification.send_notification_custom(obj.event,ids,obj.message)
+		return super(NotificationAdmin, self).save_model(request, obj, form, change)
 
 admin.site.register(Event, EventAdmin)
 admin.site.register(Content, ContentAdmin)
