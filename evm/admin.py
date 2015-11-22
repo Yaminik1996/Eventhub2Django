@@ -82,7 +82,10 @@ class NotificationAdmin(admin.ModelAdmin):
 			print "None"
 			obj.addedby = request.user
 			obj.save()
-		users = UserEvents.objects.values_list('user__userprofile__mobile_id', flat=True).filter(event = obj.event)
+		if obj.event.name == 'all':
+			users = UserEvents.objects.values_list('user__userprofile__mobile_id', flat=True)
+		else:
+			users = UserEvents.objects.values_list('user__userprofile__mobile_id', flat=True).filter(event = obj.event)
 		print "list is------------------------ ",users
 		ids = users
 			# ids = ["APA91bGzrX6HEgdPg4XCI-30TE9gTg9YeUFayr7xb8KDDl6WbyzXBJhfNIzeadptI_pjcfRTMVpjdAVZraHIC9m6t_-9o6lEPp-hb13RyBBtN5MJmNzk-6bAme8OHI0TcTFH4yRu4nhD"]
