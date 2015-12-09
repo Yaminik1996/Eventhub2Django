@@ -60,6 +60,9 @@ html, body { height: 100%; }
     #eh_video{
 		display: none;
 	}
+	/*#video_div{
+		display: none;
+	}*/
 }
 #pt-logo{
 	padding-top: 8%;
@@ -178,7 +181,7 @@ html, body { height: 100%; }
 }
 
 .touch .pt-triggers .dl-menuwrapper {
-	display: none;
+	/*display: none;*/
 }
 
 .pt-message {
@@ -213,9 +216,6 @@ html, body { height: 100%; }
 	.pt-triggers .dl-menuwrapper li a {
 		padding-top: 2px;
 		padding-bottom: 2px;
-	}
-	.pt-triggers .dl-menuwrapper li.dl-back:after, .dl-menuwrapper li > a:not(:only-child):after {
-		line-height: 24px;
 	}
 }
 
