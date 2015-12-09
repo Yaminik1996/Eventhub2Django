@@ -9,6 +9,7 @@ from django.db.models import Avg
 from django.contrib.sites.models import get_current_site
 from django.utils.encoding import smart_str
 from django.conf import settings
+from django.core.mail import send_mail
 import os
 from django.core.files import File
 from shutil import make_archive
@@ -22,6 +23,8 @@ from authentication.models import UserProfile
 def homepage(request):
 	return render(request,'site/home.html',{})
 
+def sendfeedback(request):
+	send_mail('Feedback:'+request.POST['name'], request.POST['feedback'], settings.EMAIL_HOST_USER,[request.POST['replyto']], fail_silently=False)
 
 @csrf_exempt
 def get_list_upcoming(request):
