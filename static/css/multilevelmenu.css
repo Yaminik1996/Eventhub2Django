@@ -48,12 +48,14 @@
 }
 
 .dl-menuwrapper li a {
-	display: block;
-	position: relative;
+	/*display: block;*/
+	position: absolute;
 	font-weight: 700;
 	outline: none;
 	text-transform: uppercase;
 	letter-spacing: 1px;
+	bottom: 0%;
+	left: 20%;
 }
 
 .dl-menuwrapper button,
