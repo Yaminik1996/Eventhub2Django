@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Event, Content, UserEvents, EventRatings, Notification
+from .models import Event, Content, UserEvents, EventRatings, Notification, Club, UserFollow
 import notification
 from django.http import HttpResponseRedirect,JsonResponse,HttpResponse
 # Register your models here.
@@ -58,6 +58,11 @@ class ContentAdmin(admin.ModelAdmin):
 			print "None"
 			obj.addedby = request.user
 			obj.save()
+			clubc=Club.objects.get(alias=obj.event.club)
+			ids = UserFollow.objects.values_list('user__userprofile__mobile_id', flat=True).filter(club = clubc)
+			if len(ids) > 0:
+				message="New event "+obj.event.name+" has been added. Check it out"
+				notification.send_notification_custom(obj.event,ids,message)
 		return super(ContentAdmin, self).save_model(request, obj, form, change)
 
 
@@ -98,3 +103,5 @@ admin.site.register(Content, ContentAdmin)
 admin.site.register(UserEvents)
 admin.site.register(EventRatings)
 admin.site.register(Notification, NotificationAdmin)
+admin.site.register(Club)
+admin.site.register(UserFollow)

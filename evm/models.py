@@ -100,7 +100,6 @@ class EventRatings(models.Model):
     def __unicode__(self):
         return self.user.username+" : "+self.event.name
 
-
 class Notification(models.Model):
     event=models.ForeignKey(Event,related_name='notifevent')
     message=models.TextField(max_length=100)
@@ -108,4 +107,16 @@ class Notification(models.Model):
     addedby=models.ForeignKey(User, null=True, blank=True)
     def __unicode__(self):
         return self.event.name+" : "+self.message[:20]
-        
+
+class Club(models.Model):
+    name=models.CharField(max_length=128)
+    alias=models.CharField(max_length=128)
+    def __unicode__(self):
+        return self.name
+      
+class UserFollow(models.Model):
+    user=models.ForeignKey(User,related_name='followuser')
+    club=models.ForeignKey(Club,related_name='followclub')
+    follow=models.BooleanField(default=True)
+    def __unicode__(self):
+        return self.club.name+" : "+self.user.username

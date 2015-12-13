@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.core import serializers
-from evm.models import Event,Content,UserEvents,EventRatings
+from evm.models import Event,Content,UserEvents,EventRatings,UserFollow,Club
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect,JsonResponse,HttpResponse
 import datetime
@@ -41,6 +41,13 @@ def get_list_upcoming(request):
 			response['name']=e.name
 			response['date']=e.date_time
 			response['venue']=e.venue
+			response['type']=e.type
+			response['subtype']=e.subtype
+			response['club']=e.club
+			response['contact_name_1']=e.contact_name_1
+			response['contact_number_1']=e.contact_number_1
+			response['contact_name_2']=e.contact_name_2
+			response['contact_number_2']=e.contact_number_2
 			responsef.append(response)
 		return JsonResponse(dict(events=responsef))
 	return JsonResponse({'success': 0})
@@ -60,6 +67,13 @@ def get_list_previous(request):
 			response['name']=e.name
 			response['date']=e.date_time
 			response['venue']=e.venue
+			response['type']=e.type
+			response['subtype']=e.subtype
+			response['club']=e.club
+			response['contact_name_1']=e.contact_name_1
+			response['contact_number_1']=e.contact_number_1
+			response['contact_name_2']=e.contact_name_2
+			response['contact_number_2']=e.contact_number_2
 			responsef.append(response)
 		return JsonResponse(dict(events=responsef))
 	return JsonResponse({'success': 0})
@@ -80,6 +94,13 @@ def get_list_date(request):
 			response['name']=e.name
 			response['date']=e.date_time
 			response['venue']=e.venue
+			response['type']=e.type
+			response['subtype']=e.subtype
+			response['club']=e.club
+			response['contact_name_1']=e.contact_name_1
+			response['contact_number_1']=e.contact_number_1
+			response['contact_name_2']=e.contact_name_2
+			response['contact_number_2']=e.contact_number_2
 			responsef.append(response)
 		return JsonResponse(dict(events=responsef))
 	return JsonResponse({'success': 0})
@@ -234,6 +255,51 @@ def addfeedback(request):
 		review.save()
 		return JsonResponse({'sucess':1, 'message': 'Review recorded'})
 	return JsonResponse({'sucess':0, 'message': 'Invalid'})
+
+@csrf_exempt
+def addfollowing(request):
+	"""
+	Following view
+	Input: email:
+		   club_id: ids of clubs he has checked in clid|clid|... format
+		   club_id_unchecked : ids of clubs unchecked same format
+	Output: success : 0 or 1
+	"""
+	response={}
+	response['success']=0
+	if request.method == "POST":
+		email=request.POST['email']
+		user=User.objects.get(username=email)
+		club_ids=request.POST['club_id']
+		club_ids=club_ids.split('|')
+		for club_id in club_ids:
+			club=Club.objects.get(id=club_id)
+			try:
+				u=UserFollow.objects.get(user=user,club=club)
+				u.follow=True
+				u.save()
+			except:
+				u=UserFollow()
+				u.user=user
+				u.club=club
+				u.follow=True
+				u.save()
+		club_ids=request.POST['club_id_unchecked']
+		club_ids=club_ids.split('|')
+		for club_id in club_ids:
+			club=Club.objects.get(id=club_id)
+			try:
+				u=UserFollow.objects.get(user=user,club=club)
+				u.follow=True
+				u.save()
+			except:
+				u=UserFollow()
+				u.user=user
+				u.club=club
+				u.follow=True
+				u.save()
+		response['success']=1
+	return JsonResponse(response)
 
 def download(request):
 	if request.user.is_superuser:
