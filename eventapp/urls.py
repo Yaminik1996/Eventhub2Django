@@ -27,5 +27,6 @@ urlpatterns = patterns('',
     url(r'^backup/', 'evm.views.download'),
     url(r'^mediabackup/', 'evm.views.download_media'),
     url(r'^sendfeedback/', 'evm.views.sendfeedback'),
+    url(r'^followclub/', 'evm.views.addfollowing'),
 
 )+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
