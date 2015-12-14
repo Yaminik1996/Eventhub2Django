@@ -366,6 +366,39 @@ def addevent(request):
 	return JsonResponse(response)
 
 
+@csrf_exempt
+def sendnotification(request):
+	"""
+	Send notification to followers of event
+	====Input=======
+	email
+	event_id
+	message
+	=====output=======
+	success 
+	sometimes message 
+	"""
+	response={}
+	response['success']=0
+	if request.method == 'POST':
+		email=request.POST['email']
+		event_id=request.POST['event_id']
+		message=request.POST['message']
+		user=User.objects.get(username=email)
+		if user.is_superuser:
+			event=Event.objects.get(id=event_id)
+			if event.addedby == user:
+				UserEvents.objects.values_list('user__userprofile__mobile_id', flat=True).filter(event = event)
+				if len(ids) > 0:
+					notification.send_notification_custom(obj.event,ids,message)
+				response['success']=1
+			else:
+				response['message']="Not an event of the user"
+		else:
+			response['message']="Not a super user"
+	return JsonResponse(response)
+
+
 def download(request):
 	if request.user.is_superuser:
 	    db_engine = settings.DATABASES['default']['ENGINE']
