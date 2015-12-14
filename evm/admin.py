@@ -59,11 +59,13 @@ class ContentAdmin(admin.ModelAdmin):
 			print "None"
 			obj.addedby = request.user
 			obj.save()
-			clubc=Club.objects.get(alias=obj.event.club)
-			ids = UserFollow.objects.values_list('user__userprofile__mobile_id', flat=True).filter(club = clubc)
-			if len(ids) > 0:
-				message="New event "+obj.event.name+" has been added. Check it out"
-				notification.send_notification_custom(obj.event,ids,message)
+		clubc=obj.event.club
+		print "club is ",clubc
+		ids = UserFollow.objects.values_list('user__userprofile__mobile_id', flat=True).filter(club = clubc)
+		if len(ids) > 0:
+			print 'follow list is', ids
+			message="A new event '"+obj.event.name+"' has been added by "+clubc.name+". Check it out!"
+			notification.send_notification_custom(obj.event,ids,message)
 		return super(ContentAdmin, self).save_model(request, obj, form, change)
 
 
