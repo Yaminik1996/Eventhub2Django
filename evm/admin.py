@@ -35,6 +35,7 @@ class EventAdmin(admin.ModelAdmin):
 		content.description="Stay tuned for event details"
 		content.addedby=request.user
 		content.save()
+		# code to send notifications when adding an event to be added here!
 		return HttpResponseRedirect("/admin/evm/content/"+str(content.id)+"/")
 
 

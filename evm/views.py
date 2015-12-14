@@ -290,13 +290,13 @@ def addfollowing(request):
 			club=Club.objects.get(id=club_id)
 			try:
 				u=UserFollow.objects.get(user=user,club=club)
-				u.follow=True
+				u.follow=False
 				u.save()
 			except:
 				u=UserFollow()
 				u.user=user
 				u.club=club
-				u.follow=True
+				u.follow=False
 				u.save()
 		response['success']=1
 	return JsonResponse(response)
