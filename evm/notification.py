@@ -29,9 +29,10 @@ def send_notification_custom(event, registration_ids, message):
 	print r.status_code
 
 if __name__ == "__main__":
-	ids = ["APA91bHEJIIqZZgZZ7RrAaI27d7-p3hrf5CUUNn6wq6V2TYSbAapOwTiTGOCIqYl4vmcuqI-Ux0ruypydm-ZqZO5qkqT4e4s4Zn2jv_6utzFDpAc5MTFuj-FarnMhzAqThe5c6QBxQwn"]
+	ids = ["APA91bGCS2kkPIHgjqmBhI5YW3TZaVJCGi3fxdlKcE4oA6USULcreEcdJIbRSsFGpqL8joRqa2Vzia5rEJUjJqwF69Xb5vp1W-HQNoLcSxh0d-z0NNRvgaQtGLxwHCmY9ldx5qrAJpo5EeoZ1zrypObXUza28MywLw"]
+	# ids = ["APA91bHEJIIqZZgZZ7RrAaI27d7-p3hrf5CUUNn6wq6V2TYSbAapOwTiTGOCIqYl4vmcuqI-Ux0ruypydm-ZqZO5qkqT4e4s4Zn2jv_6utzFDpAc5MTFuj-FarnMhzAqThe5c6QBxQwn"]
 	event = {}
 	event["name"] = "Test event"
 	event["date_time"] = "tomorrow"
 
-	send_notification(event,ids)
+	send_notification_custom(event,ids,"This is a test notification")
