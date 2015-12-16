@@ -365,6 +365,38 @@ def addevent(request):
 		response['message']="Sorry wrong place"
 	return JsonResponse(response)
 
+@csrf_exempt
+def delevent(request):
+	"""
+	Delete an event if the user is admin
+	=======input===========
+	event_id
+	email
+	====Output==========
+	success 0 or 1
+	message -> for toast
+
+	"""
+	response={}
+	response['success']=0
+	if request.method == 'POST':
+		event_id=request.POST['event_id']
+		email=request.POST['email']
+		user=User.object.get(username=email)
+		if user.is_superuser:
+			event=Event.objects.get(id=event_id)
+			if event.addedby == user:
+				event.delete() #cascade deleting
+				response['success']=1
+			else:
+				response['message']="Not the event admin"
+		else:
+			response['message']="User is not an admin. Cannot add the event"
+			response['success']=0
+	else:
+		response['message']="Sorry wrong place"
+	return JsonResponse(response)
+
 
 @csrf_exempt
 def sendnotification(request):
