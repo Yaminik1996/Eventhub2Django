@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToCover
 # Create your models here.
 
 
@@ -84,7 +86,8 @@ class Event(models.Model):
 
 class Content(models.Model):
     event = models.OneToOneField(Event, related_name='content')
-    image = models.ImageField(upload_to=get_image_path, blank=True, null=True)
+    # image = models.ImageField(upload_to=get_image_path, blank=True, null=True)
+    image = ProcessedImageField(upload_to=get_image_path, blank=True, null=True,processors=[ResizeToCover(100, 50)])#(width,height)
     description = models.TextField(max_length=500)
     addedby=models.ForeignKey(User, null=True, blank=True)
     def __unicode__(self):
