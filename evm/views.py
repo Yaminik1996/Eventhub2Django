@@ -330,12 +330,13 @@ def addevent(request):
 	response['success']=0
 	if request.method == 'POST':
 		email=request.POST['email']
-		user=User.object.get(username=email)
-		if user.is_superuser:
+		user=User.objects.get(username=email)
+		if user.is_active and user.is_staff:
 			event_name=request.POST['name']
 			event_type=request.POST['type']
 			event_subtype=request.POST['subtype']
-			event_club=request.POST['club']
+			event_club_name=request.POST['club']
+			event_club = Club.objects.get(name = event_club_name)
 			event_date_time=request.POST['date_time']
 			event_contact_name_1=request.POST['contact_name_1']
 			event_contact_name_2=request.POST['contact_name_2']
@@ -351,11 +352,11 @@ def addevent(request):
 			event_desp=Content(event=event,image=event_image,description=event_description,addedby=event_addedby)
 			event_desp.save()
 			#Sending notification about the new event
-			clubc=Club.objects.get(alias=event_club)
+			clubc=event.club
 			ids = UserFollow.objects.values_list('user__userprofile__mobile_id', flat=True).filter(club = clubc)
 			if len(ids) > 0:
-				message="New event "+obj.event.name+" has been added. Check it out"
-				notification.send_notification_custom(obj.event,ids,message)
+				message="A new event '"+event.name+"' has been added by "+clubc.name+". Check it out!"
+				notification.send_notification_custom(event,ids,message)
 			response['message']="Event "+event_name+" has been added"
 			response['success']=1
 		else:
@@ -382,8 +383,8 @@ def delevent(request):
 	if request.method == 'POST':
 		event_id=request.POST['event_id']
 		email=request.POST['email']
-		user=User.object.get(username=email)
-		if user.is_superuser:
+		user=User.objects.get(username=email)
+		if user.is_active and user.is_staff:
 			event=Event.objects.get(id=event_id)
 			if event.addedby == user:
 				event.delete() #cascade deleting
@@ -417,18 +418,23 @@ def updateevent(request):
 		event_id=request.POST['event_id']
 		email=request.POST['email']
 		user=User.objects.get(username=email)
-		if user.is_superuser:
+		if user.is_active and user.is_staff:
 			event=Event.objects.get(id=event_id)
+			old_venue = event.venue
+			old_date_time = event.date_time
 			if event.addedby == user:
 				event.content.description=request.POST['description']
 				event.date_time=request.POST['date_time']
 				event.venue=request.POST['venue']
 				event.content.save()
 				event.save()
-				message="Event "+event.name+" has changed..... Check it out"
-				ids=UserEvents.objects.values_list('user__userprofile__mobile_id', flat=True).filter(event = event)
-				if len(ids) > 0:
-					notification.send_notification_custom(event,ids,message)
+				# sending notification in case the time or venue changed in the update.
+				if event.date_time != old_date_time or event.venue != old_venue:
+					users = UserEvents.objects.values_list('user__userprofile__mobile_id', flat=True).filter(event = event)
+					print "list is------------------------ ",users
+					ids = users
+					if len(ids) > 0:
+						notification.send_notification(event,ids)
 				response['success']=1
 			else:
 				response['message']="User did not create event"
@@ -456,7 +462,7 @@ def sendnotification(request):
 		event_id=request.POST['event_id']
 		message=request.POST['message']
 		user=User.objects.get(username=email)
-		if user.is_superuser:
+		if user.is_active and user.is_staff:
 			event=Event.objects.get(id=event_id)
 			if event.addedby == user:
 				ids=UserEvents.objects.values_list('user__userprofile__mobile_id', flat=True).filter(event = event)
