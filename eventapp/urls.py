@@ -29,6 +29,8 @@ urlpatterns = patterns('',
     url(r'^sendfeedback/', 'evm.views.sendfeedback'),
     url(r'^followclub/', 'evm.views.addfollowing'),
     url(r'^addevent/', 'evm.views.addevent'),
+    url(r'^delevent/', 'evm.views.delevent'),
+    url(r'^updateevent/', 'evm.views.updateevent'),
     url(r'^sendnotification/', 'evm.views.sendnotification'),
 
 )+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

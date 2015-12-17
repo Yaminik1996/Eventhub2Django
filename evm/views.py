@@ -397,6 +397,45 @@ def delevent(request):
 		response['message']="Sorry wrong place"
 	return JsonResponse(response)
 
+@csrf_exempt
+def updateevent(request):
+	"""
+	Update event venue or time and a notification is sent otherwise only it is changed
+	=======Input===============
+	email
+	event_id
+	description
+	date_time
+	venue
+	========Output==============
+	success
+	message
+	"""
+	response={}
+	response['success']=0
+	if request.method == "POST":
+		event_id=request.POST['event_id']
+		email=request.POST['email']
+		user=User.objects.get(username=email)
+		if user.is_superuser:
+			event=Event.objects.get(id=event_id)
+			if event.addedby == user:
+				event.content.description=request.POST['description']
+				event.date_time=request.POST['date_time']
+				event.venue=request.POST['venue']
+				event.content.save()
+				event.save()
+				message="Event "+event.name+" has changed..... Check it out"
+				ids=UserEvents.objects.values_list('user__userprofile__mobile_id', flat=True).filter(event = event)
+				if len(ids) > 0:
+					notification.send_notification_custom(event,ids,message)
+				response['success']=1
+			else:
+				response['message']="User did not create event"
+		else:
+			response['message']="User is not superuser"
+	return JsonResponse(response)
+
 
 @csrf_exempt
 def sendnotification(request):
@@ -420,9 +459,9 @@ def sendnotification(request):
 		if user.is_superuser:
 			event=Event.objects.get(id=event_id)
 			if event.addedby == user:
-				UserEvents.objects.values_list('user__userprofile__mobile_id', flat=True).filter(event = event)
+				ids=UserEvents.objects.values_list('user__userprofile__mobile_id', flat=True).filter(event = event)
 				if len(ids) > 0:
-					notification.send_notification_custom(obj.event,ids,message)
+					notification.send_notification_custom(event,ids,message)
 				response['success']=1
 			else:
 				response['message']="Not an event of the user"
