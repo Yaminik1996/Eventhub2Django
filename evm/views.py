@@ -269,36 +269,44 @@ def addfollowing(request):
 	response={}
 	response['success']=0
 	if request.method == "POST":
-		email=request.POST['email']
-		user=User.objects.get(username=email)
+		email=request.POST["email"]
+		try:
+			user=User.objects.get(username=email)
+		except User.DoesNotExist:
+			response["message"] = "User does not exist"
+			return response
+		
 		club_ids=request.POST['club_id']
-		club_ids=club_ids.split('|')
-		for club_id in club_ids:
-			club=Club.objects.get(id=club_id)
-			try:
-				u=UserFollow.objects.get(user=user,club=club)
-				u.follow=True
-				u.save()
-			except:
-				u=UserFollow()
-				u.user=user
-				u.club=club
-				u.follow=True
-				u.save()
+		if club_ids != "":
+			club_ids=club_ids.split('|')
+			for club_id in club_ids:
+				club=Club.objects.get(id=club_id)
+				try:
+					u=UserFollow.objects.get(user=user,club=club)
+					u.follow=True
+					u.save()
+				except:
+					u=UserFollow()
+					u.user=user
+					u.club=club
+					u.follow=True
+					u.save()
 		club_ids=request.POST['club_id_unchecked']
-		club_ids=club_ids.split('|')
-		for club_id in club_ids:
-			club=Club.objects.get(id=club_id)
-			try:
-				u=UserFollow.objects.get(user=user,club=club)
-				u.follow=False
-				u.save()
-			except:
-				u=UserFollow()
-				u.user=user
-				u.club=club
-				u.follow=False
-				u.save()
+		if club_ids != "":
+			club_ids=club_ids.split('|')
+			for club_id in club_ids:
+				club=Club.objects.get(id=club_id)
+				try:
+					u=UserFollow.objects.get(user=user,club=club)
+					u.follow=False
+					u.save()
+				except:
+					u=UserFollow()
+					u.user=user
+					u.club=club
+					u.follow=False
+					u.save()
+
 		response['success']=1
 	return JsonResponse(response)
 
@@ -468,7 +476,7 @@ def sendnotification(request):
 				ids=UserEvents.objects.values_list('user__userprofile__mobile_id', flat=True).filter(event = event)
 				if len(ids) > 0:
 					notification.send_notification_custom(event,ids,message)
-				response['success']=1
+				response['success']=1	
 			else:
 				response['message']="Not an event of the user"
 		else:
