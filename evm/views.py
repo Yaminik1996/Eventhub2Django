@@ -483,6 +483,27 @@ def sendnotification(request):
 			response['message']="Not a super user"
 	return JsonResponse(response)
 
+@csrf_exempt
+def geteventlist(request):
+	"""
+	Get list of events added by user
+	======Input=========
+	email
+	======Output========
+	json array of events
+	"""
+	response={}
+	if request.method == 'POST':
+		email=request.POST['email']
+		user=User.objects.get(username=email)
+		events=Event.objects.filter(addedby=user)
+		for e in events:
+			temp={}
+			temp['name']=e.name
+			temp['venue']=e.venue
+			response[e.name]=temp
+	return JsonResponse(response)
+
 
 def download(request):
 	if request.user.is_superuser:
