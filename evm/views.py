@@ -504,6 +504,31 @@ def geteventlist(request):
 			response[e.name]=temp
 	return JsonResponse(response)
 
+@csrf_exempt
+def app_refresh_events(request):
+	response={}
+	if request.method == "POST":
+		event_id = request.POST['id']
+		events=Event.objects.filter(id__gt = event_id).order_by('date_time')
+		responsef=[]
+		for e in events:
+			response={}
+			response['id']=e.id
+			response['name']=e.name
+			response['date']=e.date_time
+			response['venue']=e.venue
+			response['type']=e.type
+			response['subtype']=e.subtype
+			response['club']=e.club
+			response['contact_name_1']=e.contact_name_1
+			response['contact_number_1']=e.contact_number_1
+			response['contact_name_2']=e.contact_name_2
+			response['contact_number_2']=e.contact_number_2
+			responsef.append(response)
+		return JsonResponse(dict(events=responsef))
+	return JsonResponse({'success': 0})
+
+
 
 def download(request):
 	if request.user.is_superuser:
