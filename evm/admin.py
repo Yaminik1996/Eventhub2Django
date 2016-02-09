@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Event, Content, UserEvents, EventRatings, Notification, Club, UserFollow
+from authentication.models import UserProfile
 import notification
 from django.http import HttpResponseRedirect,JsonResponse,HttpResponse
 # Register your models here.
@@ -66,6 +67,8 @@ class ContentAdmin(admin.ModelAdmin):
 			print 'follow list is', ids
 			message="A new event '"+obj.event.name+"' has been added by "+clubc.name+". Check it out!"
 			notification.send_notification_custom(obj.event,ids,message)
+			ids=UserProfile.objects.values_list('mobile_id',flat=True)
+			notification.send_event(obj.event,ids)
 		return super(ContentAdmin, self).save_model(request, obj, form, change)
 
 
@@ -91,7 +94,7 @@ class NotificationAdmin(admin.ModelAdmin):
 			obj.addedby = request.user
 			obj.save()
 		if obj.event.name == 'all':
-			users = UserEvents.objects.values_list('user__userprofile__mobile_id', flat=True)
+			users = UserProfile.objects.values_list('mobile_id',flat=True)
 		else:
 			users = UserEvents.objects.values_list('user__userprofile__mobile_id', flat=True).filter(event = obj.event)
 		print "list is------------------------ ",users
