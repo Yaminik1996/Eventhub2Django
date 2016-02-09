@@ -3,6 +3,9 @@ from .models import Event, Content, UserEvents, EventRatings, Notification, Club
 from authentication.models import UserProfile
 import notification
 from django.http import HttpResponseRedirect,JsonResponse,HttpResponse
+from django.conf import settings
+
+
 # Register your models here.
 
 
@@ -61,14 +64,17 @@ class ContentAdmin(admin.ModelAdmin):
 			obj.addedby = request.user
 			obj.save()
 		clubc=obj.event.club
-		print "club is ",clubc
+		print "club is -> ",clubc
 		ids = UserFollow.objects.values_list('user__userprofile__mobile_id', flat=True).filter(club = clubc)
 		if len(ids) > 0:
 			print 'follow list is', ids
+			image_url = settings.BASE_URL+obj.image.url
 			message="A new event '"+obj.event.name+"' has been added by "+clubc.name+". Check it out!"
+			# custom notification for those users who are following the club
 			notification.send_notification_custom(obj.event,ids,message)
 			ids=UserProfile.objects.values_list('mobile_id',flat=True)
-			notification.send_event(obj.event,ids)
+			# sending the event details via notification to all the users
+			notification.send_event(obj.event, image_url, ids)
 		return super(ContentAdmin, self).save_model(request, obj, form, change)
 
 
