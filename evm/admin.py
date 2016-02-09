@@ -6,7 +6,10 @@ from django.http import HttpResponseRedirect,JsonResponse,HttpResponse
 from django.conf import settings
 
 
+
 # Register your models here.
+
+
 
 
 class EventAdmin(admin.ModelAdmin):
@@ -21,6 +24,7 @@ class EventAdmin(admin.ModelAdmin):
 			print "Normal"
 			return queryset.filter(addedby=request.user)    
 	def save_model(self, request, obj, form, change):
+		print form.changed_data
 		if getattr(obj, 'addedby', None) is None:
 			print "None"
 			obj.addedby = request.user
@@ -32,6 +36,17 @@ class EventAdmin(admin.ModelAdmin):
 			# ids = ["APA91bGzrX6HEgdPg4XCI-30TE9gTg9YeUFayr7xb8KDDl6WbyzXBJhfNIzeadptI_pjcfRTMVpjdAVZraHIC9m6t_-9o6lEPp-hb13RyBBtN5MJmNzk-6bAme8OHI0TcTFH4yRu4nhD"]
 			if len(ids) > 0:
 				notification.send_notification(obj,ids)
+
+			try:
+				image_url = settings.BASE_URL+obj.content.image.url
+				ids=UserProfile.objects.values_list('mobile_id',flat=True)
+				# sending the event details via notification to all the users
+				notification.send_event(obj.event, image_url, ids)
+			except Content.DoesNotExist, e:
+				print "first time event creation"
+				pass
+			
+
 		return super(EventAdmin, self).save_model(request, obj, form, change)
 	def response_add(self, request, obj, post_url_continue=None):
 		content=Content()
@@ -68,14 +83,15 @@ class ContentAdmin(admin.ModelAdmin):
 		ids = UserFollow.objects.values_list('user__userprofile__mobile_id', flat=True).filter(club = clubc)
 		if len(ids) > 0:
 			print 'follow list is', ids
-			image_url = settings.BASE_URL+obj.image.url
 			message="A new event '"+obj.event.name+"' has been added by "+clubc.name+". Check it out!"
 			# custom notification for those users who are following the club
 			notification.send_notification_custom(obj.event,ids,message)
-			ids=UserProfile.objects.values_list('mobile_id',flat=True)
-			# sending the event details via notification to all the users
-			notification.send_event(obj.event, image_url, ids)
+		image_url = settings.BASE_URL+obj.image.url
+		ids=UserProfile.objects.values_list('mobile_id',flat=True)
+		# sending the event details via notification to all the users
+		notification.send_event(obj.event, image_url, ids)
 		return super(ContentAdmin, self).save_model(request, obj, form, change)
+
 
 
 class NotificationAdmin(admin.ModelAdmin):
