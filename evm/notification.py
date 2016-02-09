@@ -20,7 +20,7 @@ def send_notification_custom(event, registration_ids, message):
 	data = {}
 	import json
 	data['message'] = message
-	data['message_type'] = 'normal'
+	data['msg_type'] = 'normal'
 	# data['message'] = 'The event '+event.name+'\'s schedule has changed to '+event.date_time.strftime('%d/%m/%Y at %H:%M') +' at '+event.venue
 	fields = {'data':data, 'registration_ids' :registration_ids}
 	headers = {'Authorization': 'key=AIzaSyDjYk4nCrXn6Nb2VL2EZgGbebT7NdLJ5s8','Content-Type': 'application/json' }
@@ -39,10 +39,10 @@ def send_event(event, image_url, registration_ids):
 	registration_ids = [id.encode('utf-8') for id in registration_ids]
 	data = {}
 	import json
-	data['message_type'] = 'event'
+	data['msg_type'] = 'event'
 	data['message'] = "A new event - "+ event.name +" has been added! Check it out on Event Hub"
 	data['id'] = event.id
-	data['type'] = event.type
+	data['type1'] = event.type
 	data['subtype'] = event.subtype
 	data['name'] = event.name
 	# data['content'] = event.content
@@ -54,7 +54,12 @@ def send_event(event, image_url, registration_ids):
 	data['club'] = event.club.name
 	data['image'] = image_url
 	data['date_time'] = str(event.date_time)
+	data['venue']=event.venue
+	data['going'] = 0
 
+	for key in data.keys():
+		if type(data[key]) == unicode:
+			data[key] = data[key].encode('utf-8')
 
 	fields = {'data':data, 'registration_ids' :registration_ids}
 	headers = {'Authorization': 'key=AIzaSyDjYk4nCrXn6Nb2VL2EZgGbebT7NdLJ5s8','Content-Type': 'application/json' }
