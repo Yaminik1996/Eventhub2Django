@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'authentication',
     'evm',
+    'contest',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -94,7 +95,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'eventhub',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': 'vivek123',
         'HOST': 'localhost',
 	'PORT': '', 
     }
