@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect,JsonResponse
 from django.contrib.auth import authenticate,login,logout
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
+from contest.models import *
 # Create your views here.
 
 
@@ -127,4 +128,8 @@ def register_2(request):
 			response['message']="User is already present"
 			response['email']=user.username
 			response['id']=user.id
+		if len(SectionScore.objects.filter(email=user.username)) > 0:
+			s=SectionScore.objects.filter(email=user.username)[0]
+			s.is_download=True
+			s.save()
 	return JsonResponse(response)

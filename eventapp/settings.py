@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+BASE_URL = 'http://www.overknighters.com'
 
 #Email settings
 EMAIL_USE_TLS = True
@@ -31,9 +32,9 @@ SECRET_KEY = 'gl97l_8h&v8^p1#9@=flpzpbcw9u!_76u8j4c4d6=@ceq(3s9b'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = True
-
 ALLOWED_HOSTS = []
+
+
 
 
 # Application definition
@@ -48,6 +49,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'authentication',
     'evm',
+    'contest',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -91,7 +93,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'eventhub',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': 'vivek123',
         'HOST': 'localhost',
 	'PORT': '', 
     }
@@ -120,4 +122,3 @@ MEDIA_ROOT = os.path.join(os.path.dirname(__file__),'../media').replace('\\','/'
 MEDIA_URL = "/media/"
 
 STATICFILES_DIRS = ('./static',)
-TEMPLATE_DIRS = ('./templates',)

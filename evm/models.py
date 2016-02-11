@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToCover
 # Create your models here.
 
 
@@ -7,7 +9,11 @@ from django.contrib.auth.models import User
 def get_image_path(instance, filename):
     return '{0}{1}'.format(instance.event.alias,filename[filename.rfind("."):])
 
-
+class Club(models.Model):
+    name=models.CharField(max_length=128)
+    alias=models.CharField(max_length=128)
+    def __unicode__(self):
+        return self.name
 
 
 
@@ -61,7 +67,8 @@ class Event(models.Model):
 
     type = models.CharField(max_length=128,choices=TYPE_CHOICES, default='event')
     subtype = models.CharField(max_length=128,choices=SUBTYPE_CHOICES, default='general')
-    club = models.CharField(max_length=128,choices=CLUB_CHOICES, default='general')
+    # club = models.CharField(max_length=128,choices=CLUB_CHOICES, default='general')
+    club = models.ForeignKey(Club, related_name='events',blank=True,null=True)
     name = models.CharField(max_length=128, unique=True)
     date_time = models.DateTimeField()
     contact_name_1 = models.CharField(max_length=128)
@@ -79,7 +86,8 @@ class Event(models.Model):
 
 class Content(models.Model):
     event = models.OneToOneField(Event, related_name='content')
-    image = models.ImageField(upload_to=get_image_path, blank=True, null=True)
+    # image = models.ImageField(upload_to=get_image_path, blank=True, null=True)
+    image = ProcessedImageField(upload_to=get_image_path, blank=True, null=True,processors=[ResizeToCover(100, 50)])#(width,height)
     description = models.TextField(max_length=500)
     addedby=models.ForeignKey(User, null=True, blank=True)
     def __unicode__(self):
@@ -108,11 +116,7 @@ class Notification(models.Model):
     def __unicode__(self):
         return self.event.name+" : "+self.message[:20]
 
-class Club(models.Model):
-    name=models.CharField(max_length=128)
-    alias=models.CharField(max_length=128)
-    def __unicode__(self):
-        return self.name
+
       
 class UserFollow(models.Model):
     user=models.ForeignKey(User,related_name='followuser')

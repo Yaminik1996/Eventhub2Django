@@ -269,36 +269,44 @@ def addfollowing(request):
 	response={}
 	response['success']=0
 	if request.method == "POST":
-		email=request.POST['email']
-		user=User.objects.get(username=email)
+		email=request.POST["email"]
+		try:
+			user=User.objects.get(username=email)
+		except User.DoesNotExist:
+			response["message"] = "User does not exist"
+			return response
+		
 		club_ids=request.POST['club_id']
-		club_ids=club_ids.split('|')
-		for club_id in club_ids:
-			club=Club.objects.get(id=club_id)
-			try:
-				u=UserFollow.objects.get(user=user,club=club)
-				u.follow=True
-				u.save()
-			except:
-				u=UserFollow()
-				u.user=user
-				u.club=club
-				u.follow=True
-				u.save()
+		if club_ids != "":
+			club_ids=club_ids.split('|')
+			for club_id in club_ids:
+				club=Club.objects.get(id=club_id)
+				try:
+					u=UserFollow.objects.get(user=user,club=club)
+					u.follow=True
+					u.save()
+				except:
+					u=UserFollow()
+					u.user=user
+					u.club=club
+					u.follow=True
+					u.save()
 		club_ids=request.POST['club_id_unchecked']
-		club_ids=club_ids.split('|')
-		for club_id in club_ids:
-			club=Club.objects.get(id=club_id)
-			try:
-				u=UserFollow.objects.get(user=user,club=club)
-				u.follow=True
-				u.save()
-			except:
-				u=UserFollow()
-				u.user=user
-				u.club=club
-				u.follow=True
-				u.save()
+		if club_ids != "":
+			club_ids=club_ids.split('|')
+			for club_id in club_ids:
+				club=Club.objects.get(id=club_id)
+				try:
+					u=UserFollow.objects.get(user=user,club=club)
+					u.follow=False
+					u.save()
+				except:
+					u=UserFollow()
+					u.user=user
+					u.club=club
+					u.follow=False
+					u.save()
+
 		response['success']=1
 	return JsonResponse(response)
 
@@ -330,12 +338,13 @@ def addevent(request):
 	response['success']=0
 	if request.method == 'POST':
 		email=request.POST['email']
-		user=User.object.get(username=email)
-		if user.is_superuser:
+		user=User.objects.get(username=email)
+		if user.is_active and user.is_staff:
 			event_name=request.POST['name']
 			event_type=request.POST['type']
 			event_subtype=request.POST['subtype']
-			event_club=request.POST['club']
+			event_club_name=request.POST['club']
+			event_club = Club.objects.get(name = event_club_name)
 			event_date_time=request.POST['date_time']
 			event_contact_name_1=request.POST['contact_name_1']
 			event_contact_name_2=request.POST['contact_name_2']
@@ -351,11 +360,11 @@ def addevent(request):
 			event_desp=Content(event=event,image=event_image,description=event_description,addedby=event_addedby)
 			event_desp.save()
 			#Sending notification about the new event
-			clubc=Club.objects.get(alias=event_club)
+			clubc=event.club
 			ids = UserFollow.objects.values_list('user__userprofile__mobile_id', flat=True).filter(club = clubc)
 			if len(ids) > 0:
-				message="New event "+obj.event.name+" has been added. Check it out"
-				notification.send_notification_custom(obj.event,ids,message)
+				message="A new event '"+event.name+"' has been added by "+clubc.name+". Check it out!"
+				notification.send_notification_custom(event,ids,message)
 			response['message']="Event "+event_name+" has been added"
 			response['success']=1
 		else:
@@ -364,6 +373,161 @@ def addevent(request):
 	else:
 		response['message']="Sorry wrong place"
 	return JsonResponse(response)
+
+@csrf_exempt
+def delevent(request):
+	"""
+	Delete an event if the user is admin
+	=======input===========
+	event_id
+	email
+	====Output==========
+	success 0 or 1
+	message -> for toast
+
+	"""
+	response={}
+	response['success']=0
+	if request.method == 'POST':
+		event_id=request.POST['event_id']
+		email=request.POST['email']
+		user=User.objects.get(username=email)
+		if user.is_active and user.is_staff:
+			event=Event.objects.get(id=event_id)
+			if event.addedby == user:
+				event.delete() #cascade deleting
+				response['success']=1
+			else:
+				response['message']="Not the event admin"
+		else:
+			response['message']="User is not an admin. Cannot add the event"
+			response['success']=0
+	else:
+		response['message']="Sorry wrong place"
+	return JsonResponse(response)
+
+@csrf_exempt
+def updateevent(request):
+	"""
+	Update event venue or time and a notification is sent otherwise only it is changed
+	=======Input===============
+	email
+	event_id
+	description
+	date_time
+	venue
+	========Output==============
+	success
+	message
+	"""
+	response={}
+	response['success']=0
+	if request.method == "POST":
+		event_id=request.POST['event_id']
+		email=request.POST['email']
+		user=User.objects.get(username=email)
+		if user.is_active and user.is_staff:
+			event=Event.objects.get(id=event_id)
+			old_venue = event.venue
+			old_date_time = event.date_time
+			if event.addedby == user:
+				event.content.description=request.POST['description']
+				event.date_time=request.POST['date_time']
+				event.venue=request.POST['venue']
+				event.content.save()
+				event.save()
+				# sending notification in case the time or venue changed in the update.
+				if event.date_time != old_date_time or event.venue != old_venue:
+					users = UserEvents.objects.values_list('user__userprofile__mobile_id', flat=True).filter(event = event)
+					print "list is------------------------ ",users
+					ids = users
+					if len(ids) > 0:
+						notification.send_notification(event,ids)
+				response['success']=1
+			else:
+				response['message']="User did not create event"
+		else:
+			response['message']="User is not superuser"
+	return JsonResponse(response)
+
+
+@csrf_exempt
+def sendnotification(request):
+	"""
+	Send notification to followers of event
+	====Input=======
+	email
+	event_id
+	message
+	=====output=======
+	success 
+	sometimes message 
+	"""
+	response={}
+	response['success']=0
+	if request.method == 'POST':
+		email=request.POST['email']
+		event_id=request.POST['event_id']
+		message=request.POST['message']
+		user=User.objects.get(username=email)
+		if user.is_active and user.is_staff:
+			event=Event.objects.get(id=event_id)
+			if event.addedby == user:
+				ids=UserEvents.objects.values_list('user__userprofile__mobile_id', flat=True).filter(event = event)
+				if len(ids) > 0:
+					notification.send_notification_custom(event,ids,message)
+				response['success']=1	
+			else:
+				response['message']="Not an event of the user"
+		else:
+			response['message']="Not a super user"
+	return JsonResponse(response)
+
+@csrf_exempt
+def geteventlist(request):
+	"""
+	Get list of events added by user
+	======Input=========
+	email
+	======Output========
+	json array of events
+	"""
+	response={}
+	if request.method == 'POST':
+		email=request.POST['email']
+		user=User.objects.get(username=email)
+		events=Event.objects.filter(addedby=user)
+		for e in events:
+			temp={}
+			temp['name']=e.name
+			temp['venue']=e.venue
+			response[e.name]=temp
+	return JsonResponse(response)
+
+@csrf_exempt
+def app_refresh_events(request):
+	response={}
+	if request.method == "POST":
+		event_id = request.POST['id']
+		events=Event.objects.filter(id__gt = event_id).order_by('date_time')
+		responsef=[]
+		for e in events:
+			response={}
+			response['id']=e.id
+			response['name']=e.name
+			response['date']=e.date_time
+			response['venue']=e.venue
+			response['type']=e.type
+			response['subtype']=e.subtype
+			response['club']=e.club
+			response['contact_name_1']=e.contact_name_1
+			response['contact_number_1']=e.contact_number_1
+			response['contact_name_2']=e.contact_name_2
+			response['contact_number_2']=e.contact_number_2
+			responsef.append(response)
+		return JsonResponse(dict(events=responsef))
+	return JsonResponse({'success': 0})
+
 
 
 def download(request):
