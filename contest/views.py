@@ -24,11 +24,9 @@ def addresult(request):
 					l=row.split(',')
 					s=SectionScore()
 					s.section=request.POST['section']
-					s.rollno=l[0]
-					s.email=l[1]
-					s.number=l[2]
-					print l[3].title()
-					s.is_android= l[3].title() == 'True'
+					s.email=l[0]
+					print l[1].title()
+					s.is_android= l[1].title() == 'True'
 					s.save()
 			print request.POST['section']
 	return render(request,'contest/site/upload.djt',{})
