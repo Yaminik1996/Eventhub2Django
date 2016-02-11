@@ -32,8 +32,6 @@ SECRET_KEY = 'gl97l_8h&v8^p1#9@=flpzpbcw9u!_76u8j4c4d6=@ceq(3s9b'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = True
-
 ALLOWED_HOSTS = []
 
 
@@ -124,4 +122,3 @@ MEDIA_ROOT = os.path.join(os.path.dirname(__file__),'../media').replace('\\','/'
 MEDIA_URL = "/media/"
 
 STATICFILES_DIRS = ('./static',)
-TEMPLATE_DIRS = ('./templates',)

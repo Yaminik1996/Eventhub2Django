@@ -41,7 +41,7 @@ class EventAdmin(admin.ModelAdmin):
 				image_url = settings.BASE_URL+obj.content.image.url
 				ids=UserProfile.objects.values_list('mobile_id',flat=True)
 				# sending the event details via notification to all the users
-				notification.send_event(obj.event, image_url, ids)
+				# notification.send_event(obj.event, image_url, ids)
 			except Content.DoesNotExist, e:
 				print "first time event creation"
 				pass
@@ -89,7 +89,7 @@ class ContentAdmin(admin.ModelAdmin):
 		image_url = settings.BASE_URL+obj.image.url
 		ids=UserProfile.objects.values_list('mobile_id',flat=True)
 		# sending the event details via notification to all the users
-		notification.send_event(obj.event, image_url, ids)
+		# notification.send_event(obj.event, image_url, ids)
 		return super(ContentAdmin, self).save_model(request, obj, form, change)
 
 
