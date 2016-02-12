@@ -17,6 +17,7 @@ from django.core.servers.basehttp import FileWrapper
 from django.conf import settings
 from authentication.views import get_client_ip
 from authentication.models import UserProfile
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -26,6 +27,7 @@ def loginpage(request):
 		return HttpResponseRedirect('/eventhub/events/')
 	return render(request,'webapp/site/login.djt',{})
 
+@login_required(login_url='/eventhub/')
 def viewevents(request):
 	response={}
 	dt=datetime.datetime.now()
@@ -37,4 +39,42 @@ def viewevents(request):
 	response['previous']=events
 	events=Event.objects.filter(date_time__year=dt.year).filter(date_time__month=dt.month).filter(date_time__day=dt.day).order_by('date_time')
 	response['today']=events
+	email=request.user.username
+	user=User.objects.get(username=email)
+	userevents=UserEvents.objects.filter(user=user)
+	events=[]
+	for u in userevents:
+		events.append(u.event)
+	print events
+	response['myevents']=events
 	return render(request,'webapp/site/index.djt',response)
+
+
+@login_required(login_url='/eventhub/')
+def getevent(request,eventid):
+	response={}
+	user = User.objects.get(username = request.user.username)
+	event=Event.objects.get(id=eventid)
+	try:
+		uevent = UserEvents.objects.get(user = user, event = event)
+		response['going'] = 1
+	except UserEvents.DoesNotExist:
+		response['going'] = 0
+	try:
+		ufeedback = EventRatings.objects.get(user = user, event = event)
+		response['feedback'] = 1
+	except EventRatings.DoesNotExist:
+		response['feedback'] = 0
+	
+	cur_time = datetime.datetime.now()
+	event_time = event.date_time 
+	if event_time < cur_time:
+		response['started'] = 1
+	else:
+		response['started'] = 0
+	users=UserEvents.objects.filter(event=event)
+	ratings=EventRatings.objects.filter(event=event)
+	response['event']=event
+	response['user']=user
+	response['average_rating']=ratings.aggregate(Avg('rating'))['rating__avg']
+	return render(request,'webapp/site/viewevent.djt',response)

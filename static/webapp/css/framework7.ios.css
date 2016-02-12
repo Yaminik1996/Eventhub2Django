@@ -1865,6 +1865,21 @@ i.icon.icon-form-settings {
   height: 29px;
   background-image: url("../img/i-form-settings-ios.svg");
 }
+i.icon.icon-calendar{
+  width: 29px;
+  height: 29px;
+  background-image: url("../img/calendar.svg");
+}
+i.icon.icon-user{
+  width: 29px;
+  height: 29px;
+  background-image: url("../img/user.svg");
+}
+i.icon.icon-today{
+  width: 29px;
+  height: 29px;
+  background-image: url("../img/information.svg");
+}
 i.icon.icon-form-url {
   width: 29px;
   height: 29px;

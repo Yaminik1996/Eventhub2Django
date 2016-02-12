@@ -1,0 +1,10 @@
+{%extends "webapp/layout/base.djt" %}
+{%block content%}
+<div data-page="index" class="page">
+            <!-- Scrollable page content-->
+            <div class="page-content">
+             Hello
+            </div>
+          </div>
+{%endblock%}
+	

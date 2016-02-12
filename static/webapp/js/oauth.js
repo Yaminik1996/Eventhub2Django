@@ -23,6 +23,31 @@ function adduser(email, name) {
         }
 });
 }
+
+function logoutuser(token) {
+    $.ajax({
+        url : "/eventhublogin/logoutuser/", // the endpoint
+        type : "POST", // http method
+        data : {'token': token}, // data sent with the post request
+
+        // handle a successful response
+        success : function(json) {
+             // remove the value from the input
+            // console.log(json);
+            if(json.success ==1)
+            { 
+              console.log("Success");
+              location.reload();
+
+            }       
+        },
+
+        // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+            console.log("Error");
+        }
+});
+}
 var helper = (function() {
   return {
     /**
@@ -94,6 +119,11 @@ $(document).ready(function() {
         'Find and replace YOUR_CLIENT_ID with your client ID.'
     );
   }
+
+  $('#signOut').click(function(){
+        auth2.signOut();
+        logoutuser("Logout");
+  });
 });
 
 /**
@@ -127,7 +157,7 @@ function startApp() {
               console.log('init');
               auth2 = gapi.auth2.getAuthInstance();
               auth2.isSignedIn.listen(updateSignIn);
-              auth2.then(updateSignIn);
+              // auth2.then(updateSignIn);
             });
     });
   });

@@ -189,3 +189,8 @@ def register_webapp(request):
 			s.is_download=True
 			s.save()
 	return JsonResponse(response)
+
+
+def logout_webapp(request):
+	logout(request)
+	return JsonResponse({'success': 1, 'message': 'Logout done'})
