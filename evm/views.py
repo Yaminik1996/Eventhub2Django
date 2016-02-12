@@ -162,8 +162,8 @@ def getEvent(request):
 		response['id']=event.id
 		response['name']=event.name
 		response['date']=event.date_time
-		if e.club:
-			response['club']=e.club.name
+		if event.club:
+			response['club']=event.club.name
 		else:
 			response['club']='Club'
 		response['contact_name_1']=event.contact_name_1
