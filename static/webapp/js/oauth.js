@@ -1,4 +1,28 @@
 var auth2 = {};
+function adduser(email, name) {
+    $.ajax({
+        url : "/eventhublogin/auth/webapp/", // the endpoint
+        type : "POST", // http method
+        data : {'name': name,'email':email}, // data sent with the post request
+
+        // handle a successful response
+        success : function(json) {
+             // remove the value from the input
+            // console.log(json);
+            if(json.success ==1)
+            { 
+              console.log("Success");
+              window.location=window.location+"/events";
+
+            }       
+        },
+
+        // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+            console.log("Error");
+        }
+});
+}
 var helper = (function() {
   return {
     /**
@@ -15,7 +39,6 @@ var helper = (function() {
       }
       if (authResult.isSignedIn.get()) {
         $('#authOps').show('slow');
-        $('#gConnect').hide();
         helper.profile();
       } else {
           if (authResult['error'] || authResult.currentUser.get().getAuthResponse() == null) {
@@ -46,8 +69,9 @@ var helper = (function() {
       gapi.client.plus.people.get({
         'userId': 'me'
       }).then(function(res) {
-        console.log(res.result);
+        console.log(res.result.displayName);
         console.log(res.result.emails[0]['value']);
+        adduser(res.result.emails[0]['value'],res.result.displayName);
       }, function(err) {
         var error = err.result;
         $('#profile').empty();

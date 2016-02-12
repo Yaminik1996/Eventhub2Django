@@ -22,6 +22,8 @@ from authentication.models import UserProfile
 
 
 def loginpage(request):
+	if request.user.is_authenticated():
+		return HttpResponseRedirect('/eventhub/events/')
 	return render(request,'webapp/site/login.djt',{})
 
 def viewevents(request):
