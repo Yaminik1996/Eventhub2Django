@@ -44,7 +44,10 @@ def get_list_upcoming(request):
 			response['venue']=e.venue
 			response['type']=e.type
 			response['subtype']=e.subtype
-			response['club']=e.club
+			if e.club:
+				response['club']=e.club.name
+			else:
+				response['club']='Club'
 			response['contact_name_1']=e.contact_name_1
 			response['contact_number_1']=e.contact_number_1
 			response['contact_name_2']=e.contact_name_2
@@ -70,7 +73,7 @@ def get_list_previous(request):
 			response['venue']=e.venue
 			response['type']=e.type
 			response['subtype']=e.subtype
-			response['club']=e.club
+			response['club']=e.club.name
 			response['contact_name_1']=e.contact_name_1
 			response['contact_number_1']=e.contact_number_1
 			response['contact_name_2']=e.contact_name_2
@@ -97,7 +100,7 @@ def get_list_date(request):
 			response['venue']=e.venue
 			response['type']=e.type
 			response['subtype']=e.subtype
-			response['club']=e.club
+			response['club']=e.club.name
 			response['contact_name_1']=e.contact_name_1
 			response['contact_number_1']=e.contact_number_1
 			response['contact_name_2']=e.contact_name_2
@@ -153,7 +156,7 @@ def getEvent(request):
 		response['id']=event.id
 		response['name']=event.name
 		response['date']=event.date_time
-		response['club']=event.club
+		response['club']=event.club.name
 		response['contact_name_1']=event.contact_name_1
 		response['contact_number_1']=event.contact_number_1
 		response['contact_name_2']=event.contact_name_2
@@ -519,7 +522,7 @@ def app_refresh_events(request):
 			response['venue']=e.venue
 			response['type']=e.type
 			response['subtype']=e.subtype
-			response['club']=e.club
+			response['club']=e.club.name
 			response['contact_name_1']=e.contact_name_1
 			response['contact_number_1']=e.contact_number_1
 			response['contact_name_2']=e.contact_name_2
