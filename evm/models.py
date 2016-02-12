@@ -87,7 +87,7 @@ class Event(models.Model):
 class Content(models.Model):
     event = models.OneToOneField(Event, related_name='content')
     # image = models.ImageField(upload_to=get_image_path, blank=True, null=True)
-    image = ProcessedImageField(upload_to=get_image_path, blank=True, null=True,processors=[ResizeToCover(100, 50)])#(width,height)
+    image = ProcessedImageField(upload_to=get_image_path, blank=True, null=True,processors=[ResizeToCover(300, 300)])#(width,height)
     description = models.TextField(max_length=500)
     addedby=models.ForeignKey(User, null=True, blank=True)
     def __unicode__(self):
