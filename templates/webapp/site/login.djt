@@ -6,22 +6,6 @@
   <div id="gConnect" align="center">
     <div id="signin-button"></div>
   </div>
-  <div id="authOps" style="display:none">
-    <h2>User is now signed in to the app using Google+</h2>
-    <button id="signOut" onclick="auth2.signOut()">Sign Out</button>
-    <p>If the user chooses to disconnect, the app must delete all stored
-    information retrieved from Google for the given user.</p>
-    <button id="disconnect" >Disconnect your Google account from this app</button>
-
-    <h2>User's profile information</h2>
-    <div id="profile"></div>
-
-    <h2>User's friends that are visible to this app</h2>
-    <div id="visiblePeople"></div>
-
-    <h2>Authentication Logs</h2>
-    <pre id="authResult"></pre>
-  </div>
   <div id="loaderror">
     This section will be hidden by jQuery. If you can see this message, you
     may be viewing the file rather than running a web server.<br />
@@ -32,8 +16,4 @@
 </div>
 </div>
 </div>
-{%endblock%}
-{%block script%}
-<script type="text/javascript" src="{%static 'webapp/js/oauth.js' %}"></script>
-<script src="https://apis.google.com/js/client:platform.js?onload=startApp"></script>
 {%endblock%}

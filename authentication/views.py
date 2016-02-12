@@ -136,20 +136,23 @@ def register_2(request):
 
 
 @csrf_exempt
-def register_webapp(request):	
+def register_webapp(request):
+	'''
+	Input
+	==================================
+	name
+	email
+	'''
 	registered = False
 	flag=0
 	response={}
 	response['success']=0
 	if request.method == "POST":
-		method=request.POST['method']
 		profile=UserProfile()
 		name=request.POST['name']
 		email=request.POST['email']
 		password=""
-		if method == 'normal':
-			password=request.POST['password']
-		mobile_id=request.POST['mobile_id']
+		mobile_id="Not avaliable"
 		try:
 			user=User.objects.get(username=email)
 		except User.DoesNotExist:
@@ -172,14 +175,15 @@ def register_webapp(request):
 			response['email']=email
 			response['id']=user.id
 		else:
-			user.userprofile.mobile_id=mobile_id
-			user.first_name=name
-			user.userprofile.save()
-			user.save()
 			response['success']=1
 			response['message']="User is already present"
 			response['email']=user.username
 			response['id']=user.id
+		user = authenticate(username=email, password=password)
+		login(request, user)
+		user.lastLoginDate=datetime.now()
+		user.userprofile.loggedIn=True
+		user.save()
 		if len(SectionScore.objects.filter(email=user.username)) > 0:
 			s=SectionScore.objects.filter(email=user.username)[0]
 			s.is_download=True

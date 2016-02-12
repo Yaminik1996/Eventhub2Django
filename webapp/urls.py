@@ -5,6 +5,6 @@ from django.conf.urls.static import static
 from webapp import views
 
 urlpatterns = patterns('',
+	url(r'events/',views.viewevents),
 	url(r'^$',views.loginpage),
-	url(r'events/^$',views.viewevents),
 )
