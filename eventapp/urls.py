@@ -34,5 +34,6 @@ urlpatterns = patterns('',
     url(r'^sendnotification/', 'evm.views.sendnotification'),
     url(r'^refresh/', 'evm.views.app_refresh_events'),
     url(r'^contest/',include('contest.urls')),
+    url(r'^eventhub/',include('webapp.urls')),
 
 )+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

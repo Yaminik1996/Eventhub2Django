@@ -1,0 +1,23 @@
+{%extends "webapp/layout/base.djt" %}
+{%block content%}
+<div data-page="index" class="page">
+            <!-- Scrollable page content-->
+            <div class="page-content">
+              <div class="content-block-title">Todays Events</div>
+              <div class="list-block cards-list">
+                  <ul>
+                   {%for event in today%}
+                    <li class="card">
+                      <div class="card-header">{{event.name}}</div>
+                      <div class="card-content">
+                        <div class="card-content-inner">{{event.content.description|slice:":50"}}</div>
+                      </div>
+                      <div class="card-footer"><a href="">View Info</a></div>
+                    </li>
+                  {%endfor%}
+                  </ul>
+           </div>
+            </div>
+          </div>
+{%endblock%}
+	
