@@ -2,11 +2,18 @@
 {%block content%}
 <div data-page="index" class="page">
             <!-- Scrollable page content-->
+            <form data-search-list=".list-block-search" data-search-in=".item-title" class="searchbar searchbar-init">
+              <div class="searchbar-input">
+                <input type="search" placeholder="Search"><a href="#" class="searchbar-clear"></a>
+              </div><a href="#" class="searchbar-cancel">Cancel</a>
+            </form>
+  <!-- Search Bar overlay -->
+            <div class="searchbar-overlay"></div>
             <div class="page-content">
               <div class="tabs">
                   <div class="tab" id="tab1">
                   <div class="content-block-title">My Events Events</div>
-                  <div class="list-block media-list">
+                  <div class="list-block media-list list-block-search">
                   {%if myevents%}
                       <ul>
                        {%for event in myevents%}

@@ -3,8 +3,21 @@
 <div data-page="index" class="page">
             <!-- Scrollable page content-->
             <div class="page-content">
-             Hello
+               <div class="content-block inset" align="center">
+                <p><a href="#" data-popup=".popup-img" class="open-popup"><img src="/media/{{event.content.image}}" style="width: 100%"></a></p>
+                <div class="content-block-inner">
+                  <p>{{event.content.description}}</p>
+                </div>
+              </div>
             </div>
-          </div>
+   <!--         <div class="popup popup-img">
+              <div class="content-block">
+                <p>Poster</p>
+                <p><a href="#" class="close-popup">Close popup</a></p>
+                <a href="#" data-popup=".popup-img" class="open-popup"><img src="/media/{{event.content.image}}">
+              </div>
+            </div>  -->
+</div>
+            
 {%endblock%}
 	
