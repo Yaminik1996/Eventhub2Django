@@ -16,6 +16,7 @@
     <meta name="google-signin-client_id" content="714325544070-fmb1uvb62bhe7ot9li3e2r97l2mnskhm.apps.googleusercontent.com"></meta>
   </head>
   <body>
+  {%if not login%}
     <!-- Status bar overlay for fullscreen mode-->
     <div class="statusbar-overlay"></div>
     <!-- Panels overlay-->
@@ -32,28 +33,33 @@
             <div class="center sliding"><a href="#" class="link icon-only">
                 <img style="height: 80%; width: auto;" src="{%static 'img/logo.png' %}">
             </a></div>
-            <div class="right">
-                <button class="button" id="signOut">Sign Out</button>
-            </div>
+            {%if not inner%}
+                <div class="right">
+                    <button class="button" id="signOut">Sign Out</button>
+                </div>
+            {%endif%}
           </div>
         </div>
         <div class="pages navbar-through toolbar-through">
+    {%endif%}
         {%block content%}
         {%endblock%}
+    {%if not login%}
          </div>
         <!-- Bottom Toolbar-->
         <!--<div class="toolbar">
           <div class="toolbar-inner"><a href="#" class="link">Link 1</a><a href="#" class="link">Link 2</a></div>
         </div> -->
+
         <div class="toolbar tabbar tabbar-labels">
     <div class="toolbar-inner">
-        <a href="#tab1" class="tab-link">
-         <i class="icon icon-user"></i>
-            <span class="tabbar-label">My Events</span>
-        </a>
-        <a href="#tab2" class="tab-link active">
+        <a href="#tab1" class="tab-link active">
         <i class="icon icon-today"></i>
             <span class="tabbar-label">Todays Events</span>
+        </a>
+        <a href="#tab2" class="tab-link">
+         <i class="icon icon-user"></i>
+            <span class="tabbar-label">My Events</span>
         </a>
         <a href="#tab3" class="tab-link">
             <i class="icon icon-calendar"></i>
@@ -63,6 +69,7 @@
 </div>
       </div>
     </div>
+    {%endif%}
     <!-- Path to Framework7 Library JS-->
     <script type="text/javascript" src="{%static 'webapp/js/framework7.min.js' %}"></script>
     <!-- Path to your app js-->

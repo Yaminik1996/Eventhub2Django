@@ -23,9 +23,12 @@ from django.contrib.auth.decorators import login_required
 
 
 def loginpage(request):
+	response={}
 	if request.user.is_authenticated():
 		return HttpResponseRedirect('/eventhub/events/')
-	return render(request,'webapp/site/login.djt',{})
+	response['login']=True
+	print "Login"
+	return render(request,'webapp/site/login.djt',response)
 
 @login_required(login_url='/eventhub/')
 def viewevents(request):
@@ -53,6 +56,7 @@ def viewevents(request):
 @login_required(login_url='/eventhub/')
 def getevent(request,eventid):
 	response={}
+	response['inner']=True
 	user = User.objects.get(username = request.user.username)
 	event=Event.objects.get(id=eventid)
 	try:
@@ -77,4 +81,6 @@ def getevent(request,eventid):
 	response['event']=event
 	response['user']=user
 	response['average_rating']=ratings.aggregate(Avg('rating'))['rating__avg']
+	response['today']=datetime.datetime.now()
+	print response['today']
 	return render(request,'webapp/site/viewevent.djt',response)
