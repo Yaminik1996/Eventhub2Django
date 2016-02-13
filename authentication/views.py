@@ -190,7 +190,6 @@ def register_webapp(request):
 			s.save()
 	return JsonResponse(response)
 
-
 def logout_webapp(request):
 	logout(request)
 	return JsonResponse({'success': 1, 'message': 'Logout done'})
