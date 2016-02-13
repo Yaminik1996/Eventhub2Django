@@ -119,14 +119,11 @@ $(document).ready(function() {
         'Find and replace YOUR_CLIENT_ID with your client ID.'
     );
   }
-<<<<<<< HEAD
 
   $('#signOut').click(function(){
         auth2.signOut();
         logoutuser("Logout");
   });
-=======
->>>>>>> cb59ebd8e66f86e46a58644f4ba10849a00ee33d
 });
 
 /**
@@ -160,11 +157,7 @@ function startApp() {
               console.log('init');
               auth2 = gapi.auth2.getAuthInstance();
               auth2.isSignedIn.listen(updateSignIn);
-<<<<<<< HEAD
               // auth2.then(updateSignIn);
-=======
-              auth2.then(updateSignIn);
->>>>>>> cb59ebd8e66f86e46a58644f4ba10849a00ee33d
             });
     });
   });
