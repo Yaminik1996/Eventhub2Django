@@ -24,7 +24,7 @@ def addresult(request):
 					l=row.split(',')
 					s=SectionScore()
 					s.section=request.POST['section']
-					s.email=l[0]
+					s.email=l[0][1:-1]
 					print l[1].title()
 					s.is_android= l[1].title() == 'True'
 					s.save()

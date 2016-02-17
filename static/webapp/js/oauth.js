@@ -94,6 +94,7 @@ var helper = (function() {
       gapi.client.plus.people.get({
         'userId': 'me'
       }).then(function(res) {
+        console.log(res);
         console.log(res.result.displayName);
         console.log(res.result.emails[0]['value']);
         adduser(res.result.emails[0]['value'],res.result.displayName);
